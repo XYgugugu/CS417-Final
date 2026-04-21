@@ -330,6 +330,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1773137104}
     - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
+      propertyPath: coinPrefab
+      value: 
+      objectReference: {fileID: 9030540585188458901, guid: 3e859b8a21c85884781ebb8604b41a01, type: 3}
+    - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
       propertyPath: consumeDistance
       value: 3
       objectReference: {fileID: 0}
@@ -824,6 +828,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1773137104}
     - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
+      propertyPath: coinPrefab
+      value: 
+      objectReference: {fileID: 9030540585188458901, guid: 3e859b8a21c85884781ebb8604b41a01, type: 3}
+    - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
       propertyPath: consumeDistance
       value: 3
       objectReference: {fileID: 0}
@@ -943,6 +951,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1773137104}
     - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
+      propertyPath: coinPrefab
+      value: 
+      objectReference: {fileID: 9030540585188458901, guid: 3e859b8a21c85884781ebb8604b41a01, type: 3}
+    - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
       propertyPath: consumeDistance
       value: 3
       objectReference: {fileID: 0}
@@ -1007,6 +1019,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1773137104}
+    - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
+      propertyPath: coinPrefab
+      value: 
+      objectReference: {fileID: 9030540585188458901, guid: 3e859b8a21c85884781ebb8604b41a01, type: 3}
     - target: {fileID: 2288298742912081087, guid: a1eac122df78baf40be6f87139887689, type: 3}
       propertyPath: consumeDistance
       value: 3
