@@ -17,13 +17,15 @@ public class NPC_Trotter : MonoBehaviour
     public float faceTurnSpeed = 8f;
 
     [Header("Coin Chase")]
-    public float coinSearchRadius = 999f;     // effectively whole scene unless you lower it
+    public GameObject coinPrefab;
+    public float coinSearchRadius = 999f;
     public float consumeDistance = 0.75f;
     public int maxConsume = 10;
 
-    [Header("Debug")]
+    [Header("Loot")]
     public int consumedCount = 0;
     public int storedValue = 0;
+    public float dropHeight = 0.05f;
 
     private NavMeshAgent agent;
     private float repathTimer;
@@ -32,7 +34,6 @@ public class NPC_Trotter : MonoBehaviour
     private int totalFollowers = 1;
 
     private Coin currentTargetCoin = null;
-    private bool isBusyConsuming = false;
 
     public void SetFollowIndex(int index, int total)
     {
@@ -79,7 +80,6 @@ public class NPC_Trotter : MonoBehaviour
         if (consumedCount >= maxConsume)
         {
             currentTargetCoin = null;
-            isBusyConsuming = false;
             agent.SetDestination(GetFollowSlotPosition());
             return;
         }
@@ -153,7 +153,6 @@ public class NPC_Trotter : MonoBehaviour
         coin.claimedByTrotter = this;
 
         currentTargetCoin = coin;
-        isBusyConsuming = true;
     }
 
     private void ReleaseCurrentCoin()
@@ -165,7 +164,6 @@ public class NPC_Trotter : MonoBehaviour
         }
 
         currentTargetCoin = null;
-        isBusyConsuming = false;
     }
 
     private bool IsCoinStillValid(Coin coin)
@@ -188,7 +186,6 @@ public class NPC_Trotter : MonoBehaviour
         Coin coinToDestroy = currentTargetCoin;
 
         currentTargetCoin = null;
-        isBusyConsuming = false;
 
         Destroy(coinToDestroy.gameObject);
     }
@@ -265,4 +262,26 @@ public class NPC_Trotter : MonoBehaviour
             );
         }
     }
+
+    [ContextMenu("Despawn")]
+    public void Despawn()
+    {
+        ReleaseCurrentCoin();
+
+        if (coinPrefab != null && storedValue > 0)
+        {
+            Vector3 spawnPos = transform.position + Vector3.up * dropHeight;
+
+            GameObject spawnedCoinObj = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
+            Coin spawnedCoin = spawnedCoinObj.GetComponent<Coin>();
+
+            if (spawnedCoin != null)
+            {
+                spawnedCoin.value = storedValue;
+            }
+        }
+
+        Destroy(gameObject);
+    }
+
 }
