@@ -2,6 +2,13 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
+
+# OS / local editor noise
+.DS_Store
+Thumbs.db
+.utmp/
+.vscode/
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -35,6 +42,7 @@ ExportedObj/
 *.csproj
 *.unityproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -61,4 +69,3 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
-
