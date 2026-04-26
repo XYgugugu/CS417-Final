@@ -1,12 +1,11 @@
 using PVZ3D.Resource;
-
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace PVZ3D.NPC
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class NPC_Trotter : MonoBehaviour
+    public class Trotter : MonoBehaviour
     {
         [Header("Target")]
         public Transform player;
@@ -21,7 +20,7 @@ namespace PVZ3D.NPC
         public float faceTurnSpeed = 8f;
 
         [Header("Coin Chase")]
-        public GameObject coinPrefab;
+        private GameObject coinPrefab;
         public float coinSearchRadius = 999f;
         public float consumeDistance = 0.75f;
         public int maxConsume = 10;
@@ -31,13 +30,19 @@ namespace PVZ3D.NPC
         public int storedValue = 0;
         public float dropHeight = 0.05f;
 
+        [Header("Idle")]
+        public float minIdleDistance = 3f;
+        public float idleMoveSpeed = 6f;
+
         private NavMeshAgent agent;
         private float repathTimer;
+        private float normalMoveSpeed;
+        private float idleAngle;
 
         private int followIndex = 0;
         private int totalFollowers = 1;
 
-        private Coin currentTargetCoin = null;
+        private Coin currentTargetCoin;
 
         public void SetFollowIndex(int index, int total)
         {
@@ -47,21 +52,24 @@ namespace PVZ3D.NPC
 
         private void Awake()
         {
+            coinPrefab = Resources.Load<GameObject>("Coin");
+            if (coinPrefab == null)
+                Debug.LogError("Trotter: Could not load Coin.prefab from Resources.");
+
             agent = GetComponent<NavMeshAgent>();
+            normalMoveSpeed = agent.speed;
+            idleAngle = Random.Range(0f, Mathf.PI * 2f);
         }
 
         private void OnEnable()
         {
-            if (NPCFollowManager.Instance != null)
-                NPCFollowManager.Instance.RegisterTrotter(this);
+            NPCFollowManager.Instance?.RegisterTrotter(this);
         }
 
         private void OnDisable()
         {
             ReleaseCurrentCoin();
-
-            if (NPCFollowManager.Instance != null)
-                NPCFollowManager.Instance.UnregisterTrotter(this);
+            NPCFollowManager.Instance?.UnregisterTrotter(this);
         }
 
         private void Update()
@@ -80,70 +88,71 @@ namespace PVZ3D.NPC
 
         private void UpdateBehavior()
         {
-            // If max reached, never chase coins again.
             if (consumedCount >= maxConsume)
             {
-                currentTargetCoin = null;
-                agent.SetDestination(GetFollowSlotPosition());
+                ReleaseCurrentCoin();
+                IdleAroundPlayer();
                 return;
             }
 
-            // If already chasing one coin, stay locked on it until finished/lost.
             if (currentTargetCoin != null)
             {
                 if (!IsCoinStillValid(currentTargetCoin))
                 {
                     ReleaseCurrentCoin();
-                    agent.SetDestination(GetFollowSlotPosition());
+                    IdleAroundPlayer();
                     return;
                 }
 
-                agent.SetDestination(currentTargetCoin.transform.position);
-
-                float dist = Vector3.Distance(transform.position, currentTargetCoin.transform.position);
-                if (dist <= consumeDistance)
-                {
-                    ConsumeCurrentCoin();
-                }
-
+                ChaseCoin(currentTargetCoin);
                 return;
             }
 
-            // Not currently busy: try to claim a coin.
             Coin coin = FindBestAvailableCoin();
+
             if (coin != null)
             {
                 ClaimCoin(coin);
-                agent.SetDestination(coin.transform.position);
-                return;
+                ChaseCoin(coin);
             }
+            else
+            {
+                IdleAroundPlayer();
+            }
+        }
 
-            // No coin available: normal follow.
-            agent.SetDestination(GetFollowSlotPosition());
+        private void ChaseCoin(Coin coin)
+        {
+            agent.speed = normalMoveSpeed;
+            agent.SetDestination(coin.transform.position);
+
+            if (Vector3.Distance(transform.position, coin.transform.position) <= consumeDistance)
+                ConsumeCurrentCoin();
+        }
+
+        private void IdleAroundPlayer()
+        {
+            agent.speed = idleMoveSpeed;
+            agent.SetDestination(GetIdlePosition());
         }
 
         private Coin FindBestAvailableCoin()
         {
-            Coin[] allCoins = FindObjectsByType<Coin>(FindObjectsSortMode.None);
+            Coin[] coins = FindObjectsByType<Coin>(FindObjectsSortMode.None);
 
             Coin best = null;
             float bestSqrDist = float.MaxValue;
-            float maxSqr = coinSearchRadius * coinSearchRadius;
+            float maxSqrDist = coinSearchRadius * coinSearchRadius;
 
-            for (int i = 0; i < allCoins.Length; i++)
+            foreach (Coin coin in coins)
             {
-                Coin coin = allCoins[i];
-                if (coin == null) continue;
-                if (coin.isClaimed) continue;
+                if (coin == null || coin.isClaimed) continue;
 
                 float sqrDist = (coin.transform.position - transform.position).sqrMagnitude;
-                if (sqrDist > maxSqr) continue;
+                if (sqrDist > maxSqrDist || sqrDist >= bestSqrDist) continue;
 
-                if (sqrDist < bestSqrDist)
-                {
-                    bestSqrDist = sqrDist;
-                    best = coin;
-                }
+                bestSqrDist = sqrDist;
+                best = coin;
             }
 
             return best;
@@ -151,11 +160,8 @@ namespace PVZ3D.NPC
 
         private void ClaimCoin(Coin coin)
         {
-            if (coin == null) return;
-
             coin.isClaimed = true;
             coin.claimedByTrotter = this;
-
             currentTargetCoin = coin;
         }
 
@@ -172,78 +178,37 @@ namespace PVZ3D.NPC
 
         private bool IsCoinStillValid(Coin coin)
         {
-            if (coin == null) return false;
-            if (!coin.gameObject.activeInHierarchy) return false;
-            if (coin.claimedByTrotter != this) return false;
-
-            return true;
+            return coin != null
+                && coin.gameObject.activeInHierarchy
+                && coin.claimedByTrotter == this;
         }
 
         private void ConsumeCurrentCoin()
         {
-            if (currentTargetCoin == null) return;
-            if (currentTargetCoin.claimedByTrotter != this) return;
+            if (!IsCoinStillValid(currentTargetCoin)) return;
 
             storedValue += currentTargetCoin.value;
-            consumedCount += 1;
+            consumedCount++;
 
             Coin coinToDestroy = currentTargetCoin;
-
             currentTargetCoin = null;
 
             Destroy(coinToDestroy.gameObject);
         }
 
-        private Vector3 GetFollowSlotPosition()
+        private Vector3 GetIdlePosition()
         {
             Vector3 playerPos = player.position;
             playerPos.y = transform.position.y;
 
-            Vector3 forward = player.forward;
-            forward.y = 0f;
+            float radius = Mathf.Max(minIdleDistance, baseFollowDistance + spacing * totalFollowers);
+            idleAngle += repathInterval;
 
-            if (forward.sqrMagnitude < 0.001f)
-                forward = Vector3.forward;
-
-            forward.Normalize();
-
-            Vector3 right = new Vector3(forward.z, 0f, -forward.x);
-
-            int row = 0;
-            int posInRow = 0;
-            int remaining = followIndex;
-
-            while (true)
-            {
-                int rowCount = (row == 0) ? 1 : (row * 2);
-                if (remaining < rowCount)
-                {
-                    posInRow = remaining;
-                    break;
-                }
-
-                remaining -= rowCount;
-                row++;
-            }
-
-            float extraPlayerBuffer = 1.0f;
-            float backwardDist = baseFollowDistance + extraPlayerBuffer + row * spacing;
-
-            float lateralOffset;
-            if (row == 0)
-            {
-                lateralOffset = 0f;
-            }
-            else
-            {
-                float start = -((row * 2 - 1) * spacing * 0.5f);
-                lateralOffset = start + posInRow * spacing;
-            }
-
-            Vector3 desired =
-                playerPos
-                - forward * backwardDist
-                + right * lateralOffset;
+            Vector3 desired = playerPos + new Vector3(
+                Mathf.Cos(idleAngle) * radius,
+                0f,
+                Mathf.Sin(idleAngle) * radius
+            );
 
             if (NavMesh.SamplePosition(desired, out NavMeshHit hit, slotSampleRadius, NavMesh.AllAreas))
                 return hit.position;
@@ -256,15 +221,14 @@ namespace PVZ3D.NPC
             Vector3 velocity = agent.velocity;
             velocity.y = 0f;
 
-            if (velocity.sqrMagnitude > 0.05f)
-            {
-                Quaternion targetRot = Quaternion.LookRotation(velocity.normalized);
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRot,
-                    faceTurnSpeed * Time.deltaTime
-                );
-            }
+            if (velocity.sqrMagnitude <= 0.05f) return;
+
+            Quaternion targetRot = Quaternion.LookRotation(velocity.normalized);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRot,
+                faceTurnSpeed * Time.deltaTime
+            );
         }
 
         [ContextMenu("Despawn")]
@@ -274,19 +238,18 @@ namespace PVZ3D.NPC
 
             if (coinPrefab != null && storedValue > 0)
             {
-                Vector3 spawnPos = transform.position + Vector3.up * dropHeight;
+                GameObject spawnedCoinObj = Instantiate(
+                    coinPrefab,
+                    transform.position + Vector3.up * dropHeight,
+                    Quaternion.identity
+                );
 
-                GameObject spawnedCoinObj = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
                 Coin spawnedCoin = spawnedCoinObj.GetComponent<Coin>();
-
                 if (spawnedCoin != null)
-                {
                     spawnedCoin.value = storedValue;
-                }
             }
 
             Destroy(gameObject);
         }
-
     }
 }

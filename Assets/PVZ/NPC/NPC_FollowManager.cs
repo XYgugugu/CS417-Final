@@ -10,7 +10,7 @@ namespace PVZ3D.NPC
         public static NPCFollowManager Instance { get; private set; }
 
         private readonly List<NPCFollower> followers = new List<NPCFollower>();
-        private readonly List<NPC_Trotter> trotters = new List<NPC_Trotter>();
+        private readonly List<Trotter> trotters = new List<Trotter>();
 
         private void Awake()
         {
@@ -39,7 +39,7 @@ namespace PVZ3D.NPC
             RefreshFollowerIndices();
         }
 
-        public void RegisterTrotter(NPC_Trotter trotter)
+        public void RegisterTrotter(Trotter trotter)
         {
             if (!trotters.Contains(trotter))
                 trotters.Add(trotter);
@@ -47,7 +47,7 @@ namespace PVZ3D.NPC
             RefreshTrotterIndices();
         }
 
-        public void UnregisterTrotter(NPC_Trotter trotter)
+        public void UnregisterTrotter(Trotter trotter)
         {
             if (trotters.Contains(trotter))
                 trotters.Remove(trotter);
