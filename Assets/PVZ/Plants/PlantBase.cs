@@ -5,89 +5,89 @@ using UnityEngine;
 
 namespace PVZ3D.Plants
 {
-    public class PlantBase : MonoBehaviour
-    {
-        private static readonly HashSet<PlantBase> ActivePlants = new HashSet<PlantBase>();
+    // public class PlantBase : MonoBehaviour
+    // {
+    //     private static readonly HashSet<PlantBase> ActivePlants = new HashSet<PlantBase>();
 
-        [SerializeField] protected PlantDefinition definition;
-        [SerializeField] protected float currentHealth;
-        [SerializeField] protected GridCell occupiedCell;
-        [SerializeField] protected int lane;
+    //     [SerializeField] protected PlantDefinition definition;
+    //     [SerializeField] protected float currentHealth;
+    //     [SerializeField] protected GridCell occupiedCell;
+    //     [SerializeField] protected int lane;
 
-        public PlantDefinition Definition => definition;
-        public int Lane => lane;
-        public bool IsDead { get; private set; }
+    //     public PlantDefinition Definition => definition;
+    //     public int Lane => lane;
+    //     public bool IsDead { get; private set; }
 
-        protected virtual void OnEnable()
-        {
-            ActivePlants.Add(this);
-        }
+    //     protected virtual void OnEnable()
+    //     {
+    //         ActivePlants.Add(this);
+    //     }
 
-        protected virtual void OnDisable()
-        {
-            ActivePlants.Remove(this);
-        }
+    //     protected virtual void OnDisable()
+    //     {
+    //         ActivePlants.Remove(this);
+    //     }
 
-        public virtual void Initialize(PlantDefinition plantDefinition, GridCell cell)
-        {
-            definition = plantDefinition;
-            occupiedCell = cell;
-            lane = cell != null ? cell.LaneIndex : 0;
-            currentHealth = definition != null ? Mathf.Max(1f, definition.MaxHealth) : 100f;
-            IsDead = false;
+    //     public virtual void Initialize(PlantDefinition plantDefinition, GridCell cell)
+    //     {
+    //         definition = plantDefinition;
+    //         occupiedCell = cell;
+    //         lane = cell != null ? cell.LaneIndex : 0;
+    //         currentHealth = definition != null ? Mathf.Max(1f, definition.MaxHealth) : 100f;
+    //         IsDead = false;
 
-            if (occupiedCell != null)
-            {
-                occupiedCell.AssignPlant(this);
-                transform.position = occupiedCell.transform.position + Vector3.up * 0.5f;
-            }
-        }
+    //         if (occupiedCell != null)
+    //         {
+    //             occupiedCell.AssignPlant(this);
+    //             transform.position = occupiedCell.transform.position + Vector3.up * 0.5f;
+    //         }
+    //     }
 
-        public virtual void TakeDamage(float amount)
-        {
-            if (IsDead || amount <= 0f)
-            {
-                return;
-            }
+    //     public virtual void TakeDamage(float amount)
+    //     {
+    //         if (IsDead || amount <= 0f)
+    //         {
+    //             return;
+    //         }
 
-            currentHealth -= amount;
-            if (currentHealth <= 0f)
-            {
-                Die();
-            }
-        }
+    //         currentHealth -= amount;
+    //         if (currentHealth <= 0f)
+    //         {
+    //             Die();
+    //         }
+    //     }
 
-        public virtual void Die()
-        {
-            if (IsDead)
-            {
-                return;
-            }
+    //     public virtual void Die()
+    //     {
+    //         if (IsDead)
+    //         {
+    //             return;
+    //         }
 
-            IsDead = true;
+    //         IsDead = true;
 
-            if (occupiedCell != null)
-            {
-                GameManager.Instance?.RegisterPlantRemoved(occupiedCell.LaneIndex, occupiedCell.ColumnIndex);
-                occupiedCell.ClearPlant(this);
-                occupiedCell = null;
-            }
+    //         if (occupiedCell != null)
+    //         {
+    //             GameManager.Instance?.RegisterPlantRemoved(occupiedCell.LaneIndex, occupiedCell.ColumnIndex);
+    //             occupiedCell.ClearPlant(this);
+    //             occupiedCell = null;
+    //         }
 
-            Destroy(gameObject);
-        }
+    //         Destroy(gameObject);
+    //     }
 
-        public static void DestroyAllPlants()
-        {
-            PlantBase[] plants = new PlantBase[ActivePlants.Count];
-            ActivePlants.CopyTo(plants);
+    //     public static void DestroyAllPlants()
+    //     {
+    //         PlantBase[] plants = new PlantBase[ActivePlants.Count];
+    //         ActivePlants.CopyTo(plants);
 
-            foreach (PlantBase plant in plants)
-            {
-                if (plant != null)
-                {
-                    plant.Die();
-                }
-            }
-        }
-    }
+    //         foreach (PlantBase plant in plants)
+    //         {
+    //             if (plant != null)
+    //             {
+    //                 plant.Die();
+    //             }
+    //         }
+    //     }
+    // }
 }
