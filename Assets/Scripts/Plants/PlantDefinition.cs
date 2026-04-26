@@ -22,6 +22,7 @@ namespace PVZ3D.Plants
         public float AttackRange = 8f;
         public int SunPerDrop = 25;
         public float SunDropInterval = 7f;
+        public float Cooldown = 5f;
         public GameObject Prefab;
     }
 }

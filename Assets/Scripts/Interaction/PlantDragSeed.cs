@@ -86,11 +86,7 @@ namespace PVZ3D.Interaction
                 return;
             }
 
-            bool placed = placementManager.TryPlaceDefinitionAt(plantDefinition, target, true);
-            if (!placed)
-            {
-                GameEvents.RaisePurchaseResult(false, $"Cannot place {plantDefinition.DisplayName} here");
-            }
+            placementManager.TryPlaceDefinitionAt(plantDefinition, target, true);
         }
 
         private GridCell FindDropTargetCell()

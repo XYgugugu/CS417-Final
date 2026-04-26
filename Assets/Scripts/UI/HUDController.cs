@@ -120,6 +120,8 @@ namespace PVZ3D.UI
         private void Update()
         {
             EnsureRuntimeBindings();
+            RefreshSelectedPlant();
+            RefreshAffordability();
         }
 
         public void BindPlantDefinitions(IReadOnlyList<PlantDefinition> definitions)
@@ -136,7 +138,7 @@ namespace PVZ3D.UI
                 PlantDefinition def = definitions[i];
                 if (plantButtonTexts[i] != null)
                 {
-                    plantButtonTexts[i].text = $"{def.DisplayName} ({def.SunCost})";
+                    plantButtonTexts[i].text = BuildPlantButtonLabel(def);
                 }
             }
 
@@ -181,7 +183,7 @@ namespace PVZ3D.UI
             PlantDefinition selected = PlantPlacementManager.Instance != null ? PlantPlacementManager.Instance.SelectedPlant : null;
             selectedPlantText.text = selected == null
                 ? "Selected Plant: None"
-                : $"Selected Plant: {selected.DisplayName} ({selected.SunCost} sun)";
+                : BuildSelectedPlantLabel(selected);
 
             int selectedIndex = PlantPlacementManager.Instance != null ? PlantPlacementManager.Instance.SelectedPlantIndex : -1;
             for (int i = 0; i < plantButtons.Count; i++)
@@ -214,12 +216,44 @@ namespace PVZ3D.UI
                 bool canAfford = GameManager.Instance != null && GameManager.Instance.CheatModeEnabled
                     ? true
                     : sun >= defs[i].SunCost;
-                plantButtons[i].interactable = canAfford;
+                bool onCooldown = PlantPlacementManager.Instance != null && PlantPlacementManager.Instance.IsOnCooldown(defs[i]);
+                plantButtons[i].interactable = canAfford && !onCooldown;
                 if (plantButtonTexts[i] != null)
                 {
-                    plantButtonTexts[i].color = canAfford ? affordableTextColor : unaffordableTextColor;
+                    plantButtonTexts[i].text = BuildPlantButtonLabel(defs[i]);
+                    plantButtonTexts[i].color = canAfford && !onCooldown ? affordableTextColor : unaffordableTextColor;
                 }
             }
+        }
+
+        private string BuildSelectedPlantLabel(PlantDefinition definition)
+        {
+            if (definition == null)
+            {
+                return "Selected Plant: None";
+            }
+
+            float remaining = PlantPlacementManager.Instance != null ? PlantPlacementManager.Instance.GetRemainingCooldown(definition) : 0f;
+            int upgradeCost = PlantPlacementManager.Instance != null ? PlantPlacementManager.Instance.GetUpgradeCostPreview(definition) : 0;
+            string upgradeSuffix = upgradeCost > 0 ? $", Upg {upgradeCost} sun" : string.Empty;
+            return remaining > 0f
+                ? $"Selected Plant: {definition.DisplayName} ({definition.SunCost} sun{upgradeSuffix}, CD {remaining:F1}s)"
+                : $"Selected Plant: {definition.DisplayName} ({definition.SunCost} sun{upgradeSuffix})";
+        }
+
+        private string BuildPlantButtonLabel(PlantDefinition definition)
+        {
+            if (definition == null)
+            {
+                return string.Empty;
+            }
+
+            float remaining = PlantPlacementManager.Instance != null ? PlantPlacementManager.Instance.GetRemainingCooldown(definition) : 0f;
+            int upgradeCost = PlantPlacementManager.Instance != null ? PlantPlacementManager.Instance.GetUpgradeCostPreview(definition) : 0;
+            string upgradeSuffix = upgradeCost > 0 ? $" / U{upgradeCost}" : string.Empty;
+            return remaining > 0f
+                ? $"{definition.DisplayName} ({definition.SunCost}{upgradeSuffix}) [{remaining:F1}s]"
+                : $"{definition.DisplayName} ({definition.SunCost}{upgradeSuffix})";
         }
 
         public void SetFeedback(string message, bool success)

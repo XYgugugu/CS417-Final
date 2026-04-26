@@ -18,23 +18,27 @@ namespace PVZ3D.Plants
         [SerializeField] private Transform plantRuntimeParent;
 
         [Header("Default Definition - Sunflower")]
-        [SerializeField] private int defaultSunflowerCost = 45;
-        [SerializeField] private float defaultSunflowerHealth = 95f;
-        [SerializeField] private int defaultSunflowerDropAmount = 30;
-        [SerializeField] private float defaultSunflowerDropInterval = 6.2f;
+        [SerializeField] private int defaultSunflowerCost = 50;
+        [SerializeField] private float defaultSunflowerHealth = 100f;
+        [SerializeField] private int defaultSunflowerDropAmount = 25;
+        [SerializeField] private float defaultSunflowerDropInterval = 5f;
+        [SerializeField] private float defaultSunflowerCooldown = 5f;
 
         [Header("Default Definition - Peashooter")]
-        [SerializeField] private int defaultPeashooterCost = 90;
-        [SerializeField] private float defaultPeashooterHealth = 105f;
+        [SerializeField] private int defaultPeashooterCost = 100;
+        [SerializeField] private float defaultPeashooterHealth = 100f;
         [SerializeField] private float defaultPeashooterDamage = 24f;
         [SerializeField] private float defaultPeashooterRate = 1f;
         [SerializeField] private float defaultPeashooterRange = 9f;
+        [SerializeField] private float defaultPeashooterCooldown = 5f;
 
         [Header("Default Definition - Wallnut")]
-        [SerializeField] private int defaultWallnutCost = 70;
+        [SerializeField] private int defaultWallnutCost = 50;
         [SerializeField] private float defaultWallnutHealth = 500f;
+        [SerializeField] private float defaultWallnutCooldown = 15f;
 
         private int selectedPlantIndex = -1;
+        private readonly Dictionary<string, float> cooldownReadyTimes = new Dictionary<string, float>();
 
         public IReadOnlyList<PlantDefinition> PlantDefinitions => plantDefinitions;
         public int SelectedPlantIndex => selectedPlantIndex;
@@ -134,7 +138,19 @@ namespace PVZ3D.Plants
 
             if (cell.IsOccupied)
             {
+                if (TryUpgradePlant(definition, cell.Occupant))
+                {
+                    return true;
+                }
+
                 GameEvents.RaisePurchaseResult(false, "Cell occupied");
+                return false;
+            }
+
+            float remainingCooldown = GetRemainingCooldown(definition);
+            if (remainingCooldown > 0f)
+            {
+                GameEvents.RaisePurchaseResult(false, $"{definition.DisplayName} cooling down ({remainingCooldown:F1}s)");
                 return false;
             }
 
@@ -162,8 +178,46 @@ namespace PVZ3D.Plants
             }
 
             GameManager.Instance.RegisterPlantPlaced(cell.LaneIndex, cell.ColumnIndex);
+            StartCooldown(definition);
             GameEvents.RaisePurchaseResult(true, $"Placed {definition.DisplayName}");
             return true;
+        }
+
+        public float GetRemainingCooldown(PlantDefinition definition)
+        {
+            if (definition == null || definition.Cooldown <= 0f)
+            {
+                return 0f;
+            }
+
+            string key = GetCooldownKey(definition);
+            if (!cooldownReadyTimes.TryGetValue(key, out float readyTime))
+            {
+                return 0f;
+            }
+
+            return Mathf.Max(0f, readyTime - Time.time);
+        }
+
+        public bool IsOnCooldown(PlantDefinition definition)
+        {
+            return GetRemainingCooldown(definition) > 0f;
+        }
+
+        public int GetUpgradeCostPreview(PlantDefinition definition)
+        {
+            if (definition == null)
+            {
+                return 0;
+            }
+
+            return definition.Archetype switch
+            {
+                PlantArchetype.Sunflower => 50,
+                PlantArchetype.Peashooter => 100,
+                PlantArchetype.Wallnut => 50,
+                _ => 0
+            };
         }
 
         private PlantBase SpawnPlant(PlantDefinition definition, GridCell cell)
@@ -235,27 +289,49 @@ namespace PVZ3D.Plants
 
         private static void BuildSunflowerVisual(Transform root)
         {
-            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0f, 0.2f, 0f), new Vector3(0.16f, 0.45f, 0.16f), new Color(0.22f, 0.66f, 0.24f));
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.76f, 0f), new Vector3(0.42f, 0.42f, 0.18f), new Color(0.96f, 0.88f, 0.18f));
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.76f, 0f), new Vector3(0.2f, 0.2f, 0.1f), new Color(0.44f, 0.28f, 0.08f));
-            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(0f, 0.03f, 0f), new Vector3(0.5f, 0.06f, 0.5f), new Color(0.2f, 0.48f, 0.2f));
+            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(0f, 0.03f, 0f), new Vector3(0.56f, 0.06f, 0.56f), new Color(0.18f, 0.42f, 0.18f));
+            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0f, 0.25f, 0f), new Vector3(0.11f, 0.56f, 0.11f), new Color(0.22f, 0.66f, 0.24f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.95f, 0f), new Vector3(0.18f, 0.18f, 0.18f), new Color(0.52f, 0.33f, 0.11f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.95f, 0.08f), new Vector3(0.34f, 0.34f, 0.1f), new Color(0.42f, 0.24f, 0.08f));
+
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.18f, 1.02f, 0.02f), new Vector3(0.2f, 0.12f, 0.08f), new Color(0.98f, 0.86f, 0.22f), Quaternion.Euler(0f, 0f, 22f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.1f, 1.18f, 0.02f), new Vector3(0.2f, 0.12f, 0.08f), new Color(0.98f, 0.86f, 0.22f), Quaternion.Euler(0f, 0f, 58f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.08f, 1.2f, 0.02f), new Vector3(0.2f, 0.12f, 0.08f), new Color(0.98f, 0.86f, 0.22f), Quaternion.Euler(0f, 0f, 100f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.2f, 1.04f, 0.02f), new Vector3(0.2f, 0.12f, 0.08f), new Color(0.98f, 0.86f, 0.22f), Quaternion.Euler(0f, 0f, 145f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.12f, 0.82f, 0.02f), new Vector3(0.2f, 0.12f, 0.08f), new Color(0.98f, 0.86f, 0.22f), Quaternion.Euler(0f, 0f, -145f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.08f, 0.78f, 0.02f), new Vector3(0.2f, 0.12f, 0.08f), new Color(0.98f, 0.86f, 0.22f), Quaternion.Euler(0f, 0f, -92f));
+
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.16f, 0.45f, 0f), new Vector3(0.18f, 0.08f, 0.28f), new Color(0.34f, 0.72f, 0.26f), Quaternion.Euler(0f, 0f, 34f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.15f, 0.56f, 0f), new Vector3(0.22f, 0.08f, 0.3f), new Color(0.3f, 0.68f, 0.24f), Quaternion.Euler(0f, 0f, -42f));
         }
 
         private static void BuildPeashooterVisual(Transform root)
         {
-            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0f, 0.28f, 0f), new Vector3(0.2f, 0.58f, 0.2f), new Color(0.23f, 0.68f, 0.25f));
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.08f, 0.84f, 0f), new Vector3(0.34f, 0.28f, 0.28f), new Color(0.28f, 0.78f, 0.32f));
-            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0.25f, 0.84f, 0f), new Vector3(0.09f, 0.23f, 0.09f), new Color(0.18f, 0.6f, 0.2f), Quaternion.Euler(90f, 0f, 0f));
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.1f, 0.92f, 0f), new Vector3(0.12f, 0.12f, 0.12f), new Color(0.1f, 0.3f, 0.1f));
-            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(0f, 0.03f, 0f), new Vector3(0.52f, 0.06f, 0.52f), new Color(0.2f, 0.5f, 0.2f));
+            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(0f, 0.03f, 0f), new Vector3(0.58f, 0.06f, 0.58f), new Color(0.18f, 0.44f, 0.19f));
+            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0f, 0.3f, 0f), new Vector3(0.13f, 0.62f, 0.13f), new Color(0.23f, 0.68f, 0.25f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.14f, 0.92f, 0f), new Vector3(0.34f, 0.26f, 0.3f), new Color(0.28f, 0.78f, 0.32f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.24f, 0.92f, 0f), new Vector3(0.26f, 0.2f, 0.22f), new Color(0.3f, 0.8f, 0.34f));
+            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0.38f, 0.92f, 0f), new Vector3(0.1f, 0.28f, 0.1f), new Color(0.18f, 0.6f, 0.2f), Quaternion.Euler(90f, 0f, 0f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.49f, 0.92f, 0f), new Vector3(0.08f, 0.08f, 0.08f), new Color(0.14f, 0.46f, 0.14f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.03f, 1.04f, 0f), new Vector3(0.12f, 0.12f, 0.12f), new Color(0.1f, 0.3f, 0.1f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.1f, 0.82f, 0.16f), new Vector3(0.1f, 0.1f, 0.1f), new Color(0.08f, 0.24f, 0.08f));
+
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.16f, 0.48f, 0f), new Vector3(0.2f, 0.08f, 0.3f), new Color(0.31f, 0.72f, 0.25f), Quaternion.Euler(0f, 0f, -36f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.08f, 0.58f, 0.18f), new Vector3(0.18f, 0.08f, 0.24f), new Color(0.34f, 0.74f, 0.28f), Quaternion.Euler(24f, 0f, 12f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.02f, 0.72f, 0f), new Vector3(0.14f, 0.18f, 0.14f), new Color(0.38f, 0.82f, 0.34f));
         }
 
         private static void BuildWallnutVisual(Transform root)
         {
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.58f, 0f), new Vector3(0.74f, 0.9f, 0.7f), new Color(0.56f, 0.36f, 0.18f));
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.75f, 0.24f), new Vector3(0.08f, 0.08f, 0.08f), new Color(0.08f, 0.05f, 0.02f));
-            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.13f, 0.75f, 0.24f), new Vector3(0.08f, 0.08f, 0.08f), new Color(0.08f, 0.05f, 0.02f));
-            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(0f, 0.03f, 0f), new Vector3(0.56f, 0.06f, 0.56f), new Color(0.23f, 0.47f, 0.2f));
+            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(0f, 0.03f, 0f), new Vector3(0.62f, 0.06f, 0.62f), new Color(0.2f, 0.42f, 0.18f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.62f, 0f), new Vector3(0.72f, 0.92f, 0.7f), new Color(0.56f, 0.36f, 0.18f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0f, 0.78f, 0.1f), new Vector3(0.56f, 0.54f, 0.4f), new Color(0.62f, 0.4f, 0.2f));
+            CreateVisualPart(root, PrimitiveType.Cube, new Vector3(-0.02f, 0.89f, 0.26f), new Vector3(0.28f, 0.05f, 0.06f), new Color(0.18f, 0.09f, 0.04f), Quaternion.Euler(0f, 0f, -10f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.08f, 0.84f, 0.28f), new Vector3(0.07f, 0.07f, 0.07f), new Color(0.08f, 0.05f, 0.02f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.1f, 0.82f, 0.28f), new Vector3(0.07f, 0.07f, 0.07f), new Color(0.08f, 0.05f, 0.02f));
+            CreateVisualPart(root, PrimitiveType.Cylinder, new Vector3(0f, 0.42f, -0.12f), new Vector3(0.1f, 0.14f, 0.1f), new Color(0.48f, 0.3f, 0.16f), Quaternion.Euler(18f, 0f, 90f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(-0.2f, 0.12f, 0f), new Vector3(0.2f, 0.08f, 0.24f), new Color(0.28f, 0.62f, 0.22f), Quaternion.Euler(0f, 0f, -24f));
+            CreateVisualPart(root, PrimitiveType.Sphere, new Vector3(0.18f, 0.1f, 0.02f), new Vector3(0.18f, 0.08f, 0.22f), new Color(0.26f, 0.58f, 0.2f), Quaternion.Euler(0f, 0f, 28f));
         }
 
         private static GameObject CreateVisualPart(Transform parent, PrimitiveType primitive, Vector3 localPos, Vector3 localScale, Color color, Quaternion? localRot = null)
@@ -287,9 +363,9 @@ namespace PVZ3D.Plants
                 return;
             }
 
-            plantDefinitions.Add(CreateRuntimeDefinition("sunflower", "Sunflower", PlantArchetype.Sunflower, defaultSunflowerCost, defaultSunflowerHealth, 0f, 0f, 0f, defaultSunflowerDropAmount, defaultSunflowerDropInterval));
-            plantDefinitions.Add(CreateRuntimeDefinition("peashooter", "Peashooter", PlantArchetype.Peashooter, defaultPeashooterCost, defaultPeashooterHealth, defaultPeashooterDamage, defaultPeashooterRate, defaultPeashooterRange, 0, 0f));
-            plantDefinitions.Add(CreateRuntimeDefinition("wallnut", "Wallnut", PlantArchetype.Wallnut, defaultWallnutCost, defaultWallnutHealth, 0f, 0f, 0f, 0, 0f));
+            plantDefinitions.Add(CreateRuntimeDefinition("sunflower", "Sunflower", PlantArchetype.Sunflower, defaultSunflowerCost, defaultSunflowerHealth, 0f, 0f, 0f, defaultSunflowerDropAmount, defaultSunflowerDropInterval, defaultSunflowerCooldown));
+            plantDefinitions.Add(CreateRuntimeDefinition("peashooter", "Peashooter", PlantArchetype.Peashooter, defaultPeashooterCost, defaultPeashooterHealth, defaultPeashooterDamage, defaultPeashooterRate, defaultPeashooterRange, 0, 0f, defaultPeashooterCooldown));
+            plantDefinitions.Add(CreateRuntimeDefinition("wallnut", "Wallnut", PlantArchetype.Wallnut, defaultWallnutCost, defaultWallnutHealth, 0f, 0f, 0f, 0, 0f, defaultWallnutCooldown));
         }
 
         private PlantDefinition CreateRuntimeDefinition(
@@ -302,7 +378,8 @@ namespace PVZ3D.Plants
             float attackRate,
             float attackRange,
             int sunPerDrop,
-            float sunDropInterval)
+            float sunDropInterval,
+            float cooldown)
         {
             PlantDefinition def = ScriptableObject.CreateInstance<PlantDefinition>();
             def.PlantId = id;
@@ -315,7 +392,62 @@ namespace PVZ3D.Plants
             def.AttackRange = attackRange;
             def.SunPerDrop = sunPerDrop;
             def.SunDropInterval = sunDropInterval;
+            def.Cooldown = cooldown;
             return def;
+        }
+
+        private void StartCooldown(PlantDefinition definition)
+        {
+            if (definition == null || definition.Cooldown <= 0f)
+            {
+                return;
+            }
+
+            cooldownReadyTimes[GetCooldownKey(definition)] = Time.time + definition.Cooldown;
+        }
+
+        private static string GetCooldownKey(PlantDefinition definition)
+        {
+            return string.IsNullOrWhiteSpace(definition.PlantId) ? definition.name : definition.PlantId;
+        }
+
+        private bool TryUpgradePlant(PlantDefinition definition, PlantBase occupant)
+        {
+            if (definition == null || occupant == null || !occupant.CanUpgradeWith(definition))
+            {
+                return false;
+            }
+
+            int upgradeCost = occupant.GetUpgradeCost(definition);
+            string upgradeName = occupant.GetUpgradeName(definition);
+            if (!GameManager.Instance.CheatModeEnabled)
+            {
+                if (!ResourceManager.Instance.CanAffordSun(upgradeCost))
+                {
+                    GameEvents.RaisePurchaseResult(false, $"Not enough sun for {upgradeName} ({upgradeCost})");
+                    return true;
+                }
+
+                if (!ResourceManager.Instance.SpendSun(upgradeCost))
+                {
+                    GameEvents.RaisePurchaseResult(false, "Upgrade spend failed");
+                    return true;
+                }
+            }
+
+            if (!occupant.ApplyUpgrade(definition))
+            {
+                if (!GameManager.Instance.CheatModeEnabled)
+                {
+                    ResourceManager.Instance.AddSun(upgradeCost, false);
+                }
+
+                GameEvents.RaisePurchaseResult(false, "Upgrade failed");
+                return true;
+            }
+
+            GameEvents.RaisePurchaseResult(true, $"Upgraded to {upgradeName}");
+            return true;
         }
     }
 }

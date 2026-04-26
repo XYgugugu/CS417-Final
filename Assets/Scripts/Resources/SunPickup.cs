@@ -16,6 +16,7 @@ namespace PVZ3D.Resources
         [SerializeField] private float bobAmplitude = 0.15f;
         [SerializeField] private float bobSpeed = 2.8f;
         [SerializeField] private float spinSpeed = 60f;
+        [SerializeField] private float visualScaleMultiplier = 1f;
 
         private Vector3 startPos;
         private float spawnTime;
@@ -29,6 +30,7 @@ namespace PVZ3D.Resources
             spawnTime = Time.time;
             EnsureCollider();
             EnsureVisual();
+            ApplyAmountVisuals();
         }
 
         private void OnDisable()
@@ -64,6 +66,7 @@ namespace PVZ3D.Resources
         public void Configure(int amount)
         {
             sunAmount = Mathf.Max(1, amount);
+            ApplyAmountVisuals();
         }
 
         public void Collect()
@@ -147,7 +150,7 @@ namespace PVZ3D.Resources
         {
             GameObject flash = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             flash.transform.position = transform.position;
-            flash.transform.localScale = Vector3.one * 0.35f;
+            flash.transform.localScale = Vector3.one * (0.35f * visualScaleMultiplier);
             Renderer renderer = flash.GetComponent<Renderer>();
             if (renderer != null)
             {
@@ -186,6 +189,32 @@ namespace PVZ3D.Resources
             if (transform.parent != root.transform)
             {
                 transform.SetParent(root.transform, true);
+            }
+        }
+
+        private void ApplyAmountVisuals()
+        {
+            float extraScale = Mathf.Clamp01((sunAmount - 25f) / 25f);
+            visualScaleMultiplier = 1f + (extraScale * 0.45f);
+            transform.localScale = Vector3.one * visualScaleMultiplier;
+
+            SphereCollider col = GetComponent<SphereCollider>();
+            if (col != null)
+            {
+                col.radius = 0.3f * visualScaleMultiplier;
+            }
+
+            if (sunAmount >= 50)
+            {
+                Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+                for (int i = 0; i < renderers.Length; i++)
+                {
+                    Renderer renderer = renderers[i];
+                    if (renderer != null)
+                    {
+                        RuntimeVisualMaterialUtility.ApplyColor(renderer, new Color(1f, 0.94f, 0.34f));
+                    }
+                }
             }
         }
     }

@@ -121,7 +121,23 @@ namespace PVZ3D.Plants
                 col.enabled = false;
             }
 
+            GameObject ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            ring.transform.position = transform.position;
+            ring.transform.localScale = new Vector3(0.24f, 0.02f, 0.24f);
+            Renderer ringRenderer = ring.GetComponent<Renderer>();
+            if (ringRenderer != null)
+            {
+                RuntimeVisualMaterialUtility.ApplyColor(ringRenderer, new Color(0.66f, 1f, 0.66f));
+            }
+
+            Collider ringCollider = ring.GetComponent<Collider>();
+            if (ringCollider != null)
+            {
+                ringCollider.enabled = false;
+            }
+
             Destroy(flash, 0.12f);
+            Destroy(ring, 0.12f);
         }
     }
 }

@@ -12119,13 +12119,14 @@ MonoBehaviour:
   PlantId: wallnut
   DisplayName: Wallnut
   Archetype: 2
-  SunCost: 70
+  SunCost: 50
   MaxHealth: 500
   AttackDamage: 0
   AttackRate: 0
   AttackRange: 0
   SunPerDrop: 0
   SunDropInterval: 0
+  Cooldown: 15
   Prefab: {fileID: 0}
 --- !u!1 &694246312
 GameObject:
@@ -19795,13 +19796,14 @@ MonoBehaviour:
   PlantId: peashooter
   DisplayName: Peashooter
   Archetype: 1
-  SunCost: 90
-  MaxHealth: 105
+  SunCost: 100
+  MaxHealth: 100
   AttackDamage: 24
   AttackRate: 1
   AttackRange: 9
   SunPerDrop: 0
   SunDropInterval: 0
+  Cooldown: 5
   Prefab: {fileID: 0}
 --- !u!1 &1070397878
 GameObject:
@@ -32625,17 +32627,20 @@ MonoBehaviour:
   - {fileID: 1069954718}
   - {fileID: 682254503}
   plantRuntimeParent: {fileID: 0}
-  defaultSunflowerCost: 45
-  defaultSunflowerHealth: 95
-  defaultSunflowerDropAmount: 30
-  defaultSunflowerDropInterval: 6.2
-  defaultPeashooterCost: 90
-  defaultPeashooterHealth: 105
+  defaultSunflowerCost: 50
+  defaultSunflowerHealth: 100
+  defaultSunflowerDropAmount: 25
+  defaultSunflowerDropInterval: 5
+  defaultSunflowerCooldown: 5
+  defaultPeashooterCost: 100
+  defaultPeashooterHealth: 100
   defaultPeashooterDamage: 24
   defaultPeashooterRate: 1
   defaultPeashooterRange: 9
-  defaultWallnutCost: 70
+  defaultPeashooterCooldown: 5
+  defaultWallnutCost: 50
   defaultWallnutHealth: 500
+  defaultWallnutCooldown: 15
 --- !u!1 &1872766932
 GameObject:
   m_ObjectHideFlags: 0
@@ -35444,13 +35449,14 @@ MonoBehaviour:
   PlantId: sunflower
   DisplayName: Sunflower
   Archetype: 0
-  SunCost: 45
-  MaxHealth: 95
+  SunCost: 50
+  MaxHealth: 100
   AttackDamage: 0
   AttackRate: 0
   AttackRange: 0
-  SunPerDrop: 30
-  SunDropInterval: 6.2
+  SunPerDrop: 25
+  SunDropInterval: 5
+  Cooldown: 5
   Prefab: {fileID: 0}
 --- !u!1 &2075748580
 GameObject:
