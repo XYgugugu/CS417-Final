@@ -238,7 +238,7 @@ GameObject:
   - component: {fileID: 2763283168501424016}
   - component: {fileID: 2288298742912081087}
   m_Layer: 0
-  m_Name: NPC_Trotter
+  m_Name: Trotter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5801870202580169921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac29ae7fed772094caa980420b95f160, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e5950f245d6b074d992e85290e33baa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPC_Trotter
   player: {fileID: 0}
@@ -301,10 +301,11 @@ MonoBehaviour:
   slotSampleRadius: 2
   faceTurnSpeed: 8
   coinSearchRadius: 999
-  consumeDistance: 0.75
+  consumeDistance: 2
   maxConsume: 10
   consumedCount: 0
   storedValue: 0
+  dropHeight: 0.05
 --- !u!1 &6677174877500159295
 GameObject:
   m_ObjectHideFlags: 0

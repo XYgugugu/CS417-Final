@@ -51,7 +51,7 @@ namespace PVZ3D.Core
             }
         }
 
-        public void Spawn()
+        public virtual void Spawn()
         {
             if (prefab == null)
             {

@@ -10,6 +10,6 @@ namespace PVZ3D.Resource
         public int value = 1;
 
         [HideInInspector] public bool isClaimed = false;
-        [HideInInspector] public NPC_Trotter claimedByTrotter = null;
+        [HideInInspector] public Trotter claimedByTrotter = null;
     }
 }
