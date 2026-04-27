@@ -7,9 +7,12 @@ namespace PVZ3D.Core
 {
     public class GameManager : MonoBehaviour
     {
+        [Header("Player")]
+        [SerializeField] private PlayerManager playerManager = new PlayerManager();
+        public PlayerManager LossTimer => playerManager;
+
         [Header("Loss Timer")]
         [SerializeField] private LossTimer lossTimer = new LossTimer();
-
         public LossTimer LossTimer => lossTimer;
 
         private void Awake()
@@ -77,6 +80,22 @@ namespace PVZ3D.Core
     [System.Serializable]
     public class PlayerManager
     {
+        [SerializeField] private int HP = 100;
 
+        public void SetHealth(int value)
+        {
+            if (value <= 0) return;
+            HP = value;
+        }
+        public void GainHealth(int value)
+        {
+            if (value <= 0) return;
+            HP += value;
+        }
+        public void LoseHealth(int value)
+        {
+            if (value <= 0) return;
+            HP -= value;
+        }
     }
 }
