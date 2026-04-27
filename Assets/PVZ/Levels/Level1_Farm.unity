@@ -241,6 +241,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: aaff327437b0be14f9c6d1be9b411708, type: 3}
       propertyPath: m_Name
+      value: Mud_02
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: aaff327437b0be14f9c6d1be9b411708, type: 3}
       propertyPath: m_LocalScale.x
