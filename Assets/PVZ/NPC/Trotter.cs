@@ -33,6 +33,11 @@ namespace PVZ3D.NPC
         [Header("Idle")]
         public float minIdleDistance = 3f;
         public float idleMoveSpeed = 6f;
+        
+        [Header("Body")]
+        [SerializeField] private Renderer bodyRenderer;
+        [Header("Texture Randomization")]
+        [SerializeField] private string textureResourcePath = "Models/MaoMaoGao/textures/BodyTextures";
 
         private NavMeshAgent agent;
         private float repathTimer;
@@ -52,6 +57,7 @@ namespace PVZ3D.NPC
 
         private void Awake()
         {
+            ApplyRandomBodyTexture();
             coinPrefab = Resources.Load<GameObject>("Coin");
             if (coinPrefab == null)
                 Debug.LogError("Trotter: Could not load Coin.prefab from Resources.");
@@ -250,6 +256,43 @@ namespace PVZ3D.NPC
             }
 
             Destroy(gameObject);
+        }
+
+        private void ApplyRandomBodyTexture()
+        {
+            if (bodyRenderer == null)
+            {
+                Transform body = transform.Find("Body");
+                if (body != null)
+                {
+                    bodyRenderer = body.GetComponentInChildren<Renderer>();
+                }
+            }
+
+            if (bodyRenderer == null)
+            {
+                Debug.LogWarning($"{name}: No body renderer found.");
+                return;
+            }
+
+            Texture2D[] textures = Resources.LoadAll<Texture2D>(textureResourcePath);
+
+            if (textures == null || textures.Length == 0)
+            {
+                Debug.LogWarning($"{name}: No textures found in Resources/{textureResourcePath}.");
+                return;
+            }
+
+            Texture2D selectedTexture = textures[Random.Range(0, textures.Length)];
+
+            Material[] mats = bodyRenderer.materials;
+
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i].mainTexture = selectedTexture;
+            }
+
+            bodyRenderer.materials = mats;
         }
     }
 }
