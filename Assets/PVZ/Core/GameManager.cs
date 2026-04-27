@@ -73,4 +73,10 @@ namespace PVZ3D.Core
             Debug.Log("Loss timer finished. Player loses.");
         }
     }
+
+    [System.Serializable]
+    public class PlayerManager
+    {
+
+    }
 }
