@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using PVZ3D.Core;
-using PVZ3D.Grid;
+using PVZ3D.Region;
 using PVZ3D.Plants;
 using UnityEngine;
 
 namespace PVZ3D.Zombies
 {
-    // public class ZombieBase : MonoBehaviour
-    // {
+    public class ZombieBase : MonoBehaviour
+    {
     //     private static readonly HashSet<ZombieBase> ActiveZombies = new HashSet<ZombieBase>();
 
     //     [Header("Stats")]
@@ -236,5 +236,5 @@ namespace PVZ3D.Zombies
 
     //         Destroy(flash, 0.16f);
     //     }
-    // }
+    }
 }

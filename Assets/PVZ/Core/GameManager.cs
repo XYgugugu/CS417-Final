@@ -1,7 +1,5 @@
-using PVZ3D.Plants;
-using PVZ3D.Zombies;
+using System;
 using UnityEngine;
-using System.Collections;
 
 namespace PVZ3D.Core
 {
@@ -9,20 +7,37 @@ namespace PVZ3D.Core
     {
         [Header("Player")]
         [SerializeField] private PlayerManager playerManager = new PlayerManager();
-        public PlayerManager LossTimer => playerManager;
+        public PlayerManager PlayerManager => playerManager;
 
         [Header("Loss Timer")]
         [SerializeField] private LossTimer lossTimer = new LossTimer();
         public LossTimer LossTimer => lossTimer;
 
+        [Header("Game State")]
+        [SerializeField] private bool gameOver;
+        public bool GameOver => gameOver;
+
         private void Awake()
         {
-            lossTimer.StartTimer(10f);
+            playerManager.Initialize(OnLoseConditionMet);
+            lossTimer.Initialize(OnLoseConditionMet);
+
+            lossTimer.StartTimer(10000f);
         }
 
         private void Update()
         {
+            if (gameOver) return;
+
             lossTimer.Update(Time.deltaTime);
+        }
+
+        private void OnLoseConditionMet()
+        {
+            if (gameOver) return;
+
+            gameOver = true;
+            Debug.Log("Game Over.");
         }
     }
 
@@ -33,10 +48,16 @@ namespace PVZ3D.Core
 
         private bool isRunning;
         private bool isPaused;
+        private Action onTimerFinished;
 
         public float TimeRemain => timeRemain;
         public bool IsRunning => isRunning;
         public bool IsPaused => isPaused;
+
+        public void Initialize(Action onTimerFinished)
+        {
+            this.onTimerFinished = onTimerFinished;
+        }
 
         public void StartTimer(float duration)
         {
@@ -50,7 +71,6 @@ namespace PVZ3D.Core
         public void PauseTimer()
         {
             if (!isRunning) return;
-
             isPaused = true;
         }
 
@@ -73,29 +93,59 @@ namespace PVZ3D.Core
             isRunning = false;
             isPaused = false;
 
-            Debug.Log("Loss timer finished. Player loses.");
+            onTimerFinished?.Invoke();
         }
     }
 
     [System.Serializable]
     public class PlayerManager
     {
-        [SerializeField] private int HP = 100;
+        [SerializeField] private int maxHP = 100;
+        [SerializeField] private int hp = 100;
+
+        private Action onPlayerDead;
+
+        public int MaxHP => maxHP;
+        public int HP => hp;
+
+        private void Awake()
+        {
+            hp = maxHP;
+        }
+
+        public void Initialize(Action onPlayerDead)
+        {
+            this.onPlayerDead = onPlayerDead;
+        }
 
         public void SetHealth(int value)
         {
-            if (value <= 0) return;
-            HP = value;
+            hp = Mathf.Clamp(value, 0, maxHP);
+
+            if (hp <= 0)
+            {
+                onPlayerDead?.Invoke();
+            }
         }
+
         public void GainHealth(int value)
         {
             if (value <= 0) return;
-            HP += value;
+
+            hp = Mathf.Min(maxHP, hp + value);
         }
+
         public void LoseHealth(int value)
         {
             if (value <= 0) return;
-            HP -= value;
+
+            hp = Mathf.Max(0, hp - value);
+            Debug.Log($"HP: {hp}/{maxHP} - Lost {value}.");
+
+            if (hp <= 0)
+            {
+                onPlayerDead?.Invoke();
+            }
         }
     }
 }
