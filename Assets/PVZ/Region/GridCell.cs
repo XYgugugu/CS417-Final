@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-namespace PVZ3D.Grid
+namespace PVZ3D.Region
 {
     // public class GridCell : MonoBehaviour, IPointerClickHandler
     // {
