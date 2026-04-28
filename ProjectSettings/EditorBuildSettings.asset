@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Layout&Progression/Scenes/MainMenu.unity
+    path: Assets/PVZ/Levels/Entry.unity
     guid: bc6d3e0bc2dba0547aa35bc8d9e16d5c
+  - enabled: 1
+    path: Assets/PVZ/Levels/Farm.unity
+    guid: 01bb5b49a409563499c8a66666155271
+  - enabled: 1
+    path: Assets/PVZ/NPC/NPC-Scene.unity
+    guid: 93e1ca8cdcdb4ef4fa396048537a41db
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 841ffd19d09c865429bb076ab2b7f924, type: 2}
