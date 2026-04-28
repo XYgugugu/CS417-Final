@@ -66,3 +66,7 @@ crashlytics-build.properties
 # Aaron's local dev test scripts (HP/Wave runtime test runners) — never push.
 /[Aa]ssets/_DevTests/
 /[Aa]ssets/_DevTests.meta
+
+# macOS junk
+.DS_Store
+**/.DS_Store
