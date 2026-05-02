@@ -49,6 +49,7 @@ namespace PVZ3D.Plants
 
         private void Awake()
         {
+            EnsurePrefabSetup();
             Destroy(gameObject, lifetime);
         }
 
@@ -105,6 +106,47 @@ namespace PVZ3D.Plants
             hasHit = true;
             Destroy(gameObject);
             return true;
+        }
+
+        private void EnsurePrefabSetup()
+        {
+            if (GetComponentInChildren<Renderer>(true) == null)
+            {
+                GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                visual.name = "Pea Visual";
+                visual.transform.SetParent(transform, false);
+                visual.transform.localScale = Vector3.one * 0.18f;
+
+                Renderer renderer = visual.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.color = new Color(0.2f, 0.85f, 0.25f);
+                }
+
+                Collider visualCollider = visual.GetComponent<Collider>();
+                if (visualCollider != null)
+                {
+                    Destroy(visualCollider);
+                }
+            }
+
+            SphereCollider collider = GetComponent<SphereCollider>();
+            if (collider == null)
+            {
+                collider = gameObject.AddComponent<SphereCollider>();
+            }
+
+            collider.radius = hitRadius;
+            collider.isTrigger = true;
+
+            Rigidbody body = GetComponent<Rigidbody>();
+            if (body == null)
+            {
+                body = gameObject.AddComponent<Rigidbody>();
+            }
+
+            body.useGravity = false;
+            body.isKinematic = true;
         }
     }
 }

@@ -29,6 +29,7 @@ namespace PVZ3D.Plants
                 visual.transform.localPosition = Vector3.zero;
                 visual.transform.localRotation = ModelRotation;
                 NormalizeVisual(visual, GetTargetHeight(kind));
+                ApplyVisualOffset(visual, kind);
                 return;
             }
 
@@ -199,6 +200,14 @@ namespace PVZ3D.Plants
         private static float GetTargetHeight(PlantVisualKind kind)
         {
             return kind == PlantVisualKind.WallNut ? 0.85f : 0.95f;
+        }
+
+        private static void ApplyVisualOffset(GameObject visual, PlantVisualKind kind)
+        {
+            if (kind == PlantVisualKind.WallNut)
+            {
+                visual.transform.localPosition += Vector3.down * 0.04f;
+            }
         }
 
         private static void ApplyColor(Renderer renderer, Color color)
