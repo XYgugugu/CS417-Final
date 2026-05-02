@@ -1,187 +1,124 @@
 using PVZ3D.Plants;
-using PVZ3D.Core;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace PVZ3D.Region
 {
-    // public class GridCell : MonoBehaviour, IPointerClickHandler
-    // {
-    //     [SerializeField] private int laneIndex;
-    //     [SerializeField] private int columnIndex;
-    //     [SerializeField] private PlantBase occupant;
-    //     [SerializeField] private Renderer tileRenderer;
-    //     [SerializeField] private Renderer[] tileRenderers;
-    //     [SerializeField] private Color emptyColor = new Color(0.26f, 0.56f, 0.23f);
-    //     [SerializeField] private Color occupiedColor = new Color(0.18f, 0.35f, 0.15f);
-    //     [SerializeField] private Color hoverColor = new Color(0.38f, 0.7f, 0.34f);
-    //     [SerializeField] private bool enableXrInteractable = true;
+    public class GridCell : MonoBehaviour
+    {
+        [Header("Placement")]
+        [SerializeField] private Transform snapPoint;
+        [SerializeField] private bool parentPlacedPlantToCell;
+        [SerializeField] private bool disableGrabAfterPlacement = true;
 
-    //     private XRSimpleInteractable xrInteractable;
-    //     private bool xrHovering;
+        [Header("Visual Debug")]
+        [SerializeField] private Color emptyGizmoColor = new Color(0.2f, 0.8f, 0.25f, 0.35f);
+        [SerializeField] private Color occupiedGizmoColor = new Color(0.9f, 0.25f, 0.2f, 0.35f);
+        [SerializeField] private Vector3 gizmoSize = new Vector3(1f, 0.05f, 1f);
 
-    //     public int LaneIndex => laneIndex;
-    //     public int ColumnIndex => columnIndex;
-    //     public PlantBase Occupant => occupant;
-    //     public bool IsOccupied => occupant != null;
+        private PlantBase currentPlant;
 
-    //     public void Initialize(int lane, int column)
-    //     {
-    //         laneIndex = lane;
-    //         columnIndex = column;
-    //         EnsureInteractionBindings();
-    //         UpdateVisual();
-    //     }
+        public bool IsOccupied => currentPlant != null;
+        public PlantBase CurrentPlant => currentPlant;
 
-    //     public bool CanPlacePlant()
-    //     {
-    //         return occupant == null;
-    //     }
+        private Vector3 PlacementPosition => snapPoint != null ? snapPoint.position : transform.position;
+        private Quaternion PlacementRotation => snapPoint != null ? snapPoint.rotation : transform.rotation;
 
-    //     public void AssignPlant(PlantBase plant)
-    //     {
-    //         occupant = plant;
-    //         UpdateVisual();
-    //     }
+        private void Update()
+        {
+            if (currentPlant == null)
+            {
+                return;
+            }
 
-    //     public void ClearPlant(PlantBase plant)
-    //     {
-    //         if (occupant == plant)
-    //         {
-    //             occupant = null;
-    //             UpdateVisual();
-    //         }
-    //     }
+            if (currentPlant.IsDead)
+            {
+                currentPlant = null;
+            }
+        }
 
-    //     private void OnMouseDown()
-    //     {
-    //         TryPlaceFromInteraction();
-    //     }
+        private void OnTriggerEnter(Collider other)
+        {
+            TryAcceptPlantFromCollider(other);
+        }
 
-    //     public void OnPointerClick(PointerEventData eventData)
-    //     {
-    //         TryPlaceFromInteraction();
-    //     }
+        private void OnTriggerStay(Collider other)
+        {
+            TryAcceptPlantFromCollider(other);
+        }
 
-    //     private void OnEnable()
-    //     {
-    //         EnsureInteractionBindings();
-    //     }
+        public bool TryPlacePlant(PlantBase plant)
+        {
+            if (plant == null || IsOccupied || !plant.CanPlaceOn(this))
+            {
+                return false;
+            }
 
-    //     private void OnDisable()
-    //     {
-    //         UnbindXrListeners();
-    //         xrHovering = false;
-    //     }
+            currentPlant = plant;
 
-    //     private void OnDestroy()
-    //     {
-    //         UnbindXrListeners();
-    //     }
+            Transform plantTransform = plant.transform;
+            plantTransform.SetPositionAndRotation(PlacementPosition, PlacementRotation);
+            if (parentPlacedPlantToCell)
+            {
+                plantTransform.SetParent(transform, true);
+            }
 
-    //     private void EnsureInteractionBindings()
-    //     {
-    //         if (!enableXrInteractable)
-    //         {
-    //             return;
-    //         }
+            Rigidbody body = plant.GetComponent<Rigidbody>();
+            if (body != null)
+            {
+                body.useGravity = false;
+                body.isKinematic = true;
+                body.linearVelocity = Vector3.zero;
+                body.angularVelocity = Vector3.zero;
+            }
 
-    //         if (xrInteractable == null)
-    //         {
-    //             xrInteractable = GetComponent<XRSimpleInteractable>();
-    //             if (xrInteractable == null)
-    //             {
-    //                 xrInteractable = gameObject.AddComponent<XRSimpleInteractable>();
-    //             }
-    //         }
+            XRGrabInteractable grab = plant.GetComponent<XRGrabInteractable>();
+            if (grab != null && disableGrabAfterPlacement)
+            {
+                grab.enabled = false;
+            }
 
-    //         xrInteractable.selectMode = InteractableSelectMode.Single;
-    //         UnbindXrListeners();
-    //         xrInteractable.hoverEntered.AddListener(HandleHoverEntered);
-    //         xrInteractable.hoverExited.AddListener(HandleHoverExited);
-    //         xrInteractable.selectEntered.AddListener(HandleSelectEntered);
-    //     }
+            plant.PlaceOnCell(this);
+            return true;
+        }
 
-    //     private void UnbindXrListeners()
-    //     {
-    //         if (xrInteractable == null)
-    //         {
-    //             return;
-    //         }
+        public void ClearPlant(PlantBase plant)
+        {
+            if (currentPlant != plant)
+            {
+                return;
+            }
 
-    //         xrInteractable.hoverEntered.RemoveListener(HandleHoverEntered);
-    //         xrInteractable.hoverExited.RemoveListener(HandleHoverExited);
-    //         xrInteractable.selectEntered.RemoveListener(HandleSelectEntered);
-    //     }
+            currentPlant = null;
+        }
 
-    //     private void HandleHoverEntered(HoverEnterEventArgs args)
-    //     {
-    //         xrHovering = true;
-    //         UpdateVisual();
-    //     }
+        private void TryAcceptPlantFromCollider(Collider other)
+        {
+            if (IsOccupied)
+            {
+                return;
+            }
 
-    //     private void HandleHoverExited(HoverExitEventArgs args)
-    //     {
-    //         xrHovering = false;
-    //         UpdateVisual();
-    //     }
+            PlantBase plant = other.GetComponentInParent<PlantBase>();
+            if (plant == null || plant.IsPlaced || !plant.CanPlaceOn(this))
+            {
+                return;
+            }
 
-    //     private void HandleSelectEntered(SelectEnterEventArgs args)
-    //     {
-    //         TryPlaceFromInteraction();
-    //     }
+            XRGrabInteractable grab = plant.GetComponent<XRGrabInteractable>();
+            if (grab != null && grab.isSelected)
+            {
+                return;
+            }
 
-    //     private void TryPlaceFromInteraction()
-    //     {
-    //         Plants.PlantPlacementManager.Instance?.TryPlaceSelectedAt(this);
-    //     }
+            TryPlacePlant(plant);
+        }
 
-    //     private void UpdateVisual()
-    //     {
-    //         EnsureRendererCache();
-
-    //         Color targetColor;
-    //         if (IsOccupied)
-    //         {
-    //             targetColor = occupiedColor;
-    //         }
-    //         else if (xrHovering)
-    //         {
-    //             targetColor = hoverColor;
-    //         }
-    //         else
-    //         {
-    //             targetColor = emptyColor;
-    //         }
-
-    //         if (tileRenderers == null || tileRenderers.Length == 0)
-    //         {
-    //             return;
-    //         }
-
-    //         for (int i = 0; i < tileRenderers.Length; i++)
-    //         {
-    //             Renderer r = tileRenderers[i];
-    //             if (r != null)
-    //             {
-    //                 RuntimeVisualMaterialUtility.ApplyColor(r, targetColor);
-    //             }
-    //         }
-    //     }
-
-    //     private void EnsureRendererCache()
-    //     {
-    //         if (tileRenderers == null || tileRenderers.Length == 0)
-    //         {
-    //             tileRenderers = GetComponentsInChildren<Renderer>(true);
-    //         }
-
-    //         if (tileRenderer == null && tileRenderers != null && tileRenderers.Length > 0)
-    //         {
-    //             tileRenderer = tileRenderers[0];
-    //         }
-    //     }
-    // }
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = IsOccupied ? occupiedGizmoColor : emptyGizmoColor;
+            Gizmos.matrix = Matrix4x4.TRS(PlacementPosition, PlacementRotation, Vector3.one);
+            Gizmos.DrawCube(Vector3.zero, gizmoSize);
+        }
+    }
 }

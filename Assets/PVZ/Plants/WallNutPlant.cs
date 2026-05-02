@@ -12,9 +12,12 @@ namespace PVZ3D.Plants
         {
             base.Awake();
             SetMaxHealth(800f);
-            ConfigureHurtbox(new Vector3(0f, 0.5f, 0f), new Vector3(1f, 1f, 1f));
+            ConfigureHurtbox(
+                new Vector3(0f, 0.5f, 0f) * PlantVisualUtility.PrefabScale,
+                Vector3.one * PlantVisualUtility.PrefabScale);
             EnsureHurtbox();
             PlantVisualUtility.EnsurePlantVisual(transform, PlantVisualKind.WallNut);
+            PlantVisualUtility.EnsurePlantInteraction(transform);
         }
 
         [ContextMenu("Upgrade To Tall-Nut")]
@@ -27,7 +30,9 @@ namespace PVZ3D.Plants
 
             isTallNut = true;
             MultiplyMaxHealth(2f);
-            ConfigureHurtbox(new Vector3(0f, 0.78f, 0f), new Vector3(1.1f, 1.55f, 1.1f));
+            ConfigureHurtbox(
+                new Vector3(0f, 0.78f, 0f) * PlantVisualUtility.PrefabScale,
+                new Vector3(1.1f, 1.55f, 1.1f) * PlantVisualUtility.PrefabScale);
             EnsureHurtbox();
             ApplyTallNutVisual();
             return true;

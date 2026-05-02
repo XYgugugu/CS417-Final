@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 400000}
   - component: {fileID: 11400000}
   m_Layer: 0
-  m_Name: SunflowerPlant
-  m_TagString: Untagged
+  m_Name: WallNutPlant
+  m_TagString: Plant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41,17 +41,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10a3e384d1184c7dbc29c9590359a246, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f82794f8b54d81a193911a9abad922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 800
   currentHealth: 0
-  hurtboxCenter: {x: 0, y: 0.45, z: 0}
-  hurtboxSize: {x: 0.8, y: 0.9, z: 0.8}
-  sunInterval: 8
-  sunSpawnOffset: {x: 0, y: 1.25, z: 0}
-  sunLifetime: 12
-  normalSunValue: 25
-  upgradedSunValue: 50
-  upgradedVisualScale: 1.16
-  producesLargeSun: 0
+  hurtboxCenter: {x: 0, y: 0.5, z: 0}
+  hurtboxSize: {x: 1, y: 1, z: 1}
+  isPlaced: 0
+  isTallNut: 0
