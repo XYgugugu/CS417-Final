@@ -1,240 +1,228 @@
-using System.Collections.Generic;
+using UnityEngine;
+using System.Collections;
 using PVZ3D.Core;
 using PVZ3D.Region;
 using PVZ3D.Plants;
-using UnityEngine;
 
 namespace PVZ3D.Zombies
 {
     public class ZombieBase : MonoBehaviour
     {
-    //     private static readonly HashSet<ZombieBase> ActiveZombies = new HashSet<ZombieBase>();
+        [Header("Health")]
+        [SerializeField] private float baseHealth = 100f;
+        [SerializeField] private float shieldHealth = 0f;
+        [SerializeField] private bool hasShield = false;
+        // [SerializeField] private GameObject replacementZombie;
 
-    //     [Header("Stats")]
-    //     [SerializeField] private float maxHealth = 100f;
-    //     [SerializeField] private float moveSpeed = 0.7f;
-    //     [SerializeField] private float attackDamage = 12f;
-    //     [SerializeField] private float attackInterval = 1.0f;
-    //     [SerializeField] private int coinReward = 5;
-    //     [SerializeField] private int baseDamage = 1;
+        [Header("Attack")]
+        [SerializeField] private float attackDamage = 10f;
+        [SerializeField] private float attackInterval = 1f;
 
-    //     [Header("Runtime")]
-    //     [SerializeField] private int lane;
-    //     [SerializeField] private float currentHealth;
-    //     [SerializeField] private float baseTargetX;
+        [Header("Loot Drop")]
+        [SerializeField] private GameObject coinPrefab;
+        [SerializeField] private int coinDropAmount = 1;
 
-    //     private ZombieMovement movement;
-    //     private ZombieAttack attack;
+        [Header("Attack Juice")]
+        [SerializeField] private float attackDistance = 0.08f;
+        [SerializeField] private float attackSpeed = 8f;
 
-    //     public int Lane => lane;
-    //     public float MoveSpeed => moveSpeed;
-    //     public float AttackDamage => attackDamage;
-    //     public float AttackInterval => attackInterval;
-    //     public float BaseTargetX => baseTargetX;
-    //     public bool IsDead { get; private set; }
+        [Header("Audio")]
+        [SerializeField] private AudioSource walkAudio;
+        [SerializeField] private AudioSource attackAudio;
+        [SerializeField] private AudioSource deathAudio;
 
-    //     private void OnEnable()
-    //     {
-    //         ActiveZombies.Add(this);
-    //     }
+        private float currentHealth;
+        private float currentShieldHealth;
+        private float attackTimer = 0f;
+        private bool isAttacking = false;
+        private PathFollow movement;
+        private PlantBase targetPlant;
+        private float dropOffsetY = 0.3f;
 
-    //     private void OnDisable()
-    //     {
-    //         ActiveZombies.Remove(this);
-    //     }
+        void Start()
+        {
+            currentHealth = baseHealth;
+            currentShieldHealth = shieldHealth;
+            movement = GetComponent<PathFollow>();
+        }
 
-    //     private void Awake()
-    //     {
-    //         movement = GetComponent<ZombieMovement>();
-    //         if (movement == null)
-    //         {
-    //             movement = gameObject.AddComponent<ZombieMovement>();
-    //         }
+        void Update()
+        {
+            HandleWalkAudio();
+            ZombieAttack();
+        }
 
-    //         movement.Initialize(this);
+        private void HandleWalkAudio()
+        {
+            if (movement == null || walkAudio == null) return;
 
-    //         attack = GetComponent<ZombieAttack>();
-    //         if (attack == null)
-    //         {
-    //             attack = gameObject.AddComponent<ZombieAttack>();
-    //         }
+            if (!movement.IsStopped() && !walkAudio.isPlaying)
+            {
+                walkAudio.volume = 0.3f;
+                walkAudio.Play();
+            }
+            else if (movement.IsStopped() && walkAudio.isPlaying)
+            {
+                walkAudio.Stop();
+            }
+        }
 
-    //         attack.Initialize(this);
-    //         currentHealth = maxHealth;
-    //     }
+        private void ZombieAttack()
+        {   
+             if (targetPlant == null)
+            {
+                if (movement != null)
+                {
+                    movement.ResumeMoving();
+                }
+                return;
+            }
 
-    //     private void Update()
-    //     {
-    //         if (IsDead)
-    //         {
-    //             return;
-    //         }
+            movement?.StopMoving();
 
-    //         GamePhase phase = GameManager.Instance != null ? GameManager.Instance.State.Phase : GamePhase.Menu;
-    //         if (phase != GamePhase.Prep && phase != GamePhase.Battle)
-    //         {
-    //             return;
-    //         }
+            attackTimer += Time.deltaTime;
 
-    //         movement.Tick(Time.deltaTime);
-    //         attack.Tick(Time.deltaTime);
-    //     }
+            if (attackTimer >= attackInterval)
+            {
+                targetPlant.TakeDamage(attackDamage);
 
-    //     public void Configure(int laneIndex, float health, float speed, float damage, float hitInterval, int reward, int baseHit)
-    //     {
-    //         lane = laneIndex;
-    //         maxHealth = Mathf.Max(1f, health);
-    //         currentHealth = maxHealth;
-    //         moveSpeed = Mathf.Max(0.1f, speed);
-    //         attackDamage = Mathf.Max(1f, damage);
-    //         attackInterval = Mathf.Max(0.2f, hitInterval);
-    //         coinReward = Mathf.Max(0, reward);
-    //         baseDamage = Mathf.Max(1, baseHit);
-    //         baseTargetX = LawnGridManager.Instance != null
-    //             ? LawnGridManager.Instance.GetBasePositionForLane(lane).x
-    //             : -1.5f;
-    //     }
+                if (attackAudio != null)
+                {
+                    attackAudio.volume = 0.7f;
+                    attackAudio.Play();
+                }
+                StartCoroutine(AttackJuice());
 
-    //     public void TakeDamage(float amount)
-    //     {
-    //         if (IsDead || amount <= 0f)
-    //         {
-    //             return;
-    //         }
+                attackTimer = 0f;
+            }
+        }
 
-    //         currentHealth -= amount;
-    //         if (currentHealth <= 0f)
-    //         {
-    //             Die(true, true);
-    //         }
-    //     }
+        private void OnTriggerEnter(Collider other)
+        {
+            PlantBase plant = other.GetComponent<PlantBase>();
 
-    //     public void SetAttackTarget(PlantBase plant)
-    //     {
-    //         attack.SetTarget(plant);
-    //     }
+            if (plant != null)
+            {
+                targetPlant = plant;
+                attackTimer = 0f;
+                movement?.StopMoving();
+            }
+        }
 
-    //     public void ClearAttackTarget()
-    //     {
-    //         attack.ClearTarget();
-    //     }
+        private IEnumerator AttackJuice()
+        {
+            if (isAttacking) yield break;
 
-    //     public void ReachBase()
-    //     {
-    //         if (IsDead)
-    //         {
-    //             return;
-    //         }
+            isAttacking = true;
 
-    //         SpawnBaseHitFlash();
-    //         GameManager.Instance?.DamageBase(baseDamage);
-    //         Die(false, false);
-    //     }
+            Vector3 start = transform.localPosition;
+            Vector3 forward = start + Vector3.forward * attackDistance;
 
-    //     public void Die(bool grantReward, bool countAsKill)
-    //     {
-    //         if (IsDead)
-    //         {
-    //             return;
-    //         }
+            float t = 0f;
 
-    //         IsDead = true;
-    //         if (grantReward)
-    //         {
-    //             ResourceManager.Instance?.AddCoins(coinReward, true);
-    //         }
+            while (t < 1f)
+            {
+                t += Time.deltaTime * attackSpeed;
+                transform.localPosition = Vector3.Lerp(start, forward, t);
+                yield return null;
+            }
 
-    //         SpawnDeathBurst();
-    //         GameManager.Instance?.RegisterZombieRemoved(lane, countAsKill);
-    //         Destroy(gameObject);
-    //     }
+            t = 0f;
 
-    //     public static ZombieBase GetFirstAliveInLaneAhead(int laneIndex, float xPosition, float maxDistance)
-    //     {
-    //         ZombieBase best = null;
-    //         float bestDistance = float.PositiveInfinity;
+            while (t < 1f)
+            {
+                t += Time.deltaTime * attackSpeed;
+                transform.localPosition = Vector3.Lerp(forward, start, t);
+                yield return null;
+            }
 
-    //         foreach (ZombieBase zombie in ActiveZombies)
-    //         {
-    //             if (zombie == null || zombie.IsDead || zombie.lane != laneIndex)
-    //             {
-    //                 continue;
-    //             }
+            transform.localPosition = start;
+            isAttacking = false;
+        }
 
-    //             float dx = zombie.transform.position.x - xPosition;
-    //             if (dx <= 0f || dx > maxDistance)
-    //             {
-    //                 continue;
-    //             }
+        public void TakeDamage(float damage)
+        {
+            if (hasShield && currentShieldHealth > 0)
+            {
+                if (currentShieldHealth - damage <= 0)
+                {
+                    float carryOverDamage = damage - currentShieldHealth;
+                    currentShieldHealth = 0f;
+                    hasShield = false;
+                    currentHealth -= carryOverDamage;
+                    // ReplaceWithBaseZombie(carryOverDamage);
+                    return;
+                }
 
-    //             if (dx < bestDistance)
-    //             {
-    //                 bestDistance = dx;
-    //                 best = zombie;
-    //             }
-    //         }
+                currentShieldHealth -= damage;
+                return;
+            }
 
-    //         return best;
-    //     }
+            currentHealth -= damage;
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+        }
 
-    //     public static void DestroyAllZombies()
-    //     {
-    //         ZombieBase[] zombies = new ZombieBase[ActiveZombies.Count];
-    //         ActiveZombies.CopyTo(zombies);
+        // private void ReplaceWithBaseZombie(float carryOverDamage)
+        // {
+        //     // Destory original zombie and replace with office worker zombie
+        //     Vector3 currentPosition = transform.position;
 
-    //         foreach (ZombieBase zombie in zombies)
-    //         {
-    //             if (zombie != null)
-    //             {
-    //                 zombie.Die(false, false);
-    //             }
-    //         }
-    //     }
+        //     GameObject newZombie = Instantiate(
+        //         replacementZombie,
+        //         currentPosition,
+        //         Quaternion.identity
+        //     );
 
-    //     private void SpawnDeathBurst()
-    //     {
-    //         GameObject burst = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-    //         burst.transform.position = transform.position + Vector3.up * 0.8f;
-    //         burst.transform.localScale = Vector3.one * 0.24f;
-    //         Renderer renderer = burst.GetComponent<Renderer>();
-    //         if (renderer != null)
-    //         {
-    //             RuntimeVisualMaterialUtility.ApplyColor(renderer, new Color(0.82f, 0.3f, 0.3f));
-    //         }
+        //     ZombieBase newZombieBase = newZombie.GetComponent<ZombieBase>();
 
-    //         Collider col = burst.GetComponent<Collider>();
-    //         if (col != null)
-    //         {
-    //             col.enabled = false;
-    //         }
+        //     if (newZombieBase != null && carryOverDamage > 0)
+        //     {
+        //         newZombieBase.TakeDamage(carryOverDamage);
+        //     }
 
-    //         Destroy(burst, 0.2f);
-    //     }
+        //     Destroy(gameObject);
+        // }
 
-    //     private void SpawnBaseHitFlash()
-    //     {
-    //         Vector3 pos = transform.position;
-    //         if (LawnGridManager.Instance != null)
-    //         {
-    //             pos = LawnGridManager.Instance.GetBasePositionForLane(lane) + new Vector3(0.35f, 0.45f, 0f);
-    //         }
+        private void Die()
+        {
+            Debug.Log("Zombie died");
+            
+            DropLoot();
 
-    //         GameObject flash = GameObject.CreatePrimitive(PrimitiveType.Cube);
-    //         flash.transform.position = pos;
-    //         flash.transform.localScale = new Vector3(0.16f, 0.6f, 1.25f);
-    //         Renderer renderer = flash.GetComponent<Renderer>();
-    //         if (renderer != null)
-    //         {
-    //             RuntimeVisualMaterialUtility.ApplyColor(renderer, new Color(0.95f, 0.35f, 0.3f));
-    //         }
+            if (deathAudio != null)
+            {
+                deathAudio.transform.parent = null;
+                walkAudio.volume = 0.4f;
+                deathAudio.Play();
+                Destroy(deathAudio.gameObject, deathAudio.clip.length);
+            }
 
-    //         Collider col = flash.GetComponent<Collider>();
-    //         if (col != null)
-    //         {
-    //             col.enabled = false;
-    //         }
+            Destroy(gameObject);
+        }
 
-    //         Destroy(flash, 0.16f);
-    //     }
+        private void DropLoot()
+        {
+            if (coinPrefab == null) return;
+
+            for (int i = 0; i < coinDropAmount; i++)
+            {
+                Vector3 randomOffset = new Vector3(
+                    Random.Range(-0.3f, 0.3f),
+                    dropOffsetY,
+                    Random.Range(-0.3f, 0.3f)
+                );
+
+                Vector3 dropPosition = transform.position + randomOffset;
+
+                Instantiate(
+                    coinPrefab,
+                    dropPosition,
+                    Quaternion.identity
+                );
+            }
+        }
     }
 }
