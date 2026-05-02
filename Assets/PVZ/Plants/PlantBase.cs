@@ -1,93 +1,129 @@
-using System.Collections.Generic;
-using PVZ3D.Core;
-using PVZ3D.Region;
 using UnityEngine;
 
 namespace PVZ3D.Plants
 {
-    // public class PlantBase : MonoBehaviour
-    // {
-    //     private static readonly HashSet<PlantBase> ActivePlants = new HashSet<PlantBase>();
+    public class PlantBase : MonoBehaviour
+    {
+        [SerializeField] private float maxHealth = 100f;
+        [SerializeField] private float currentHealth;
+        [SerializeField] private Vector3 hurtboxCenter = new Vector3(0f, 0.45f, 0f);
+        [SerializeField] private Vector3 hurtboxSize = new Vector3(0.8f, 0.9f, 0.8f);
 
-    //     [SerializeField] protected PlantDefinition definition;
-    //     [SerializeField] protected float currentHealth;
-    //     [SerializeField] protected GridCell occupiedCell;
-    //     [SerializeField] protected int lane;
+        public float MaxHealth => maxHealth;
+        public float CurrentHealth => currentHealth;
+        public bool IsDead { get; private set; }
 
-    //     public PlantDefinition Definition => definition;
-    //     public int Lane => lane;
-    //     public bool IsDead { get; private set; }
+        protected virtual void Awake()
+        {
+            currentHealth = Mathf.Max(1f, maxHealth);
+        }
 
-    //     protected virtual void OnEnable()
-    //     {
-    //         ActivePlants.Add(this);
-    //     }
+        public void SetMaxHealth(float value, bool refillHealth = true)
+        {
+            maxHealth = Mathf.Max(1f, value);
+            if (refillHealth)
+            {
+                currentHealth = maxHealth;
+            }
+            else
+            {
+                currentHealth = Mathf.Min(currentHealth, maxHealth);
+            }
+        }
 
-    //     protected virtual void OnDisable()
-    //     {
-    //         ActivePlants.Remove(this);
-    //     }
+        public void MultiplyMaxHealth(float multiplier, bool refillHealth = true)
+        {
+            SetMaxHealth(maxHealth * Mathf.Max(0.1f, multiplier), refillHealth);
+        }
 
-    //     public virtual void Initialize(PlantDefinition plantDefinition, GridCell cell)
-    //     {
-    //         definition = plantDefinition;
-    //         occupiedCell = cell;
-    //         lane = cell != null ? cell.LaneIndex : 0;
-    //         currentHealth = definition != null ? Mathf.Max(1f, definition.MaxHealth) : 100f;
-    //         IsDead = false;
+        protected void ConfigureHurtbox(Vector3 center, Vector3 size)
+        {
+            hurtboxCenter = center;
+            hurtboxSize = new Vector3(
+                Mathf.Max(0.1f, size.x),
+                Mathf.Max(0.1f, size.y),
+                Mathf.Max(0.1f, size.z));
 
-    //         if (occupiedCell != null)
-    //         {
-    //             occupiedCell.AssignPlant(this);
-    //             transform.position = occupiedCell.transform.position + Vector3.up * 0.5f;
-    //         }
-    //     }
+            BoxCollider box = GetComponent<BoxCollider>();
+            if (box != null)
+            {
+                ApplyHurtbox(box);
+            }
+        }
 
-    //     public virtual void TakeDamage(float amount)
-    //     {
-    //         if (IsDead || amount <= 0f)
-    //         {
-    //             return;
-    //         }
+        protected void EnsureHurtbox()
+        {
+            BoxCollider box = GetComponent<BoxCollider>();
+            if (box == null)
+            {
+                box = gameObject.AddComponent<BoxCollider>();
+            }
 
-    //         currentHealth -= amount;
-    //         if (currentHealth <= 0f)
-    //         {
-    //             Die();
-    //         }
-    //     }
+            ApplyHurtbox(box);
 
-    //     public virtual void Die()
-    //     {
-    //         if (IsDead)
-    //         {
-    //             return;
-    //         }
+            Rigidbody body = GetComponent<Rigidbody>();
+            if (body == null)
+            {
+                body = gameObject.AddComponent<Rigidbody>();
+            }
 
-    //         IsDead = true;
+            body.useGravity = false;
+            body.isKinematic = true;
+        }
 
-    //         if (occupiedCell != null)
-    //         {
-    //             GameManager.Instance?.RegisterPlantRemoved(occupiedCell.LaneIndex, occupiedCell.ColumnIndex);
-    //             occupiedCell.ClearPlant(this);
-    //             occupiedCell = null;
-    //         }
+        public virtual void TakeDamage(float amount)
+        {
+            if (IsDead || amount <= 0f)
+            {
+                return;
+            }
 
-    //         Destroy(gameObject);
-    //     }
+            currentHealth -= amount;
+            if (currentHealth <= 0f)
+            {
+                Die();
+            }
+        }
 
-    //     public static void DestroyAllPlants()
-    //     {
-    //         PlantBase[] plants = new PlantBase[ActivePlants.Count];
-    //         ActivePlants.CopyTo(plants);
+        protected virtual void Die()
+        {
+            if (IsDead)
+            {
+                return;
+            }
 
-    //         foreach (PlantBase plant in plants)
-    //         {
-    //             if (plant != null)
-    //             {
-    //                 plant.Die();
-    //             }
-    //         }
-    //     }
-    // }
+            IsDead = true;
+            SpawnDeathFeedback();
+            Destroy(gameObject);
+        }
+
+        private void ApplyHurtbox(BoxCollider box)
+        {
+            box.center = hurtboxCenter;
+            box.size = hurtboxSize;
+            box.isTrigger = false;
+        }
+
+        private void SpawnDeathFeedback()
+        {
+            GameObject burst = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            burst.name = "Plant Death Feedback";
+            burst.transform.position = transform.position + Vector3.up * Mathf.Max(0.35f, hurtboxCenter.y);
+            burst.transform.localScale = hurtboxSize * 0.35f;
+
+            Renderer renderer = burst.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material.color = new Color(0.45f, 0.75f, 0.25f, 0.75f);
+            }
+
+            Collider collider = burst.GetComponent<Collider>();
+            if (collider != null)
+            {
+                collider.enabled = false;
+            }
+
+            Destroy(burst, 0.25f);
+        }
+    }
 }
