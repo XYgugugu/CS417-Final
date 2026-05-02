@@ -6,7 +6,6 @@ namespace PVZ3D.Plants
     {
         [SerializeField] private float sunInterval = 8f;
         [SerializeField] private Vector3 sunSpawnOffset = new Vector3(0f, 1.25f, 0f);
-        [SerializeField] private float sunLifetime = 12f;
         [SerializeField] private int normalSunValue = 25;
         [SerializeField] private int upgradedSunValue = 50;
         [SerializeField] private float upgradedVisualScale = 1.16f;
@@ -21,15 +20,18 @@ namespace PVZ3D.Plants
         {
             base.Awake();
             SetMaxHealth(100f);
-            ConfigureHurtbox(new Vector3(0f, 0.45f, 0f), new Vector3(0.8f, 0.9f, 0.8f));
+            ConfigureHurtbox(
+                new Vector3(0f, 0.45f, 0f) * PlantVisualUtility.PrefabScale,
+                new Vector3(0.8f, 0.9f, 0.8f) * PlantVisualUtility.PrefabScale);
             EnsureHurtbox();
             PlantVisualUtility.EnsurePlantVisual(transform, PlantVisualKind.Sunflower);
+            PlantVisualUtility.EnsurePlantInteraction(transform);
             nextSunTime = Time.time + sunInterval;
         }
 
         private void Update()
         {
-            if (IsDead || Time.time < nextSunTime)
+            if (!IsPlaced || IsDead || Time.time < nextSunTime)
             {
                 return;
             }
@@ -42,8 +44,7 @@ namespace PVZ3D.Plants
         {
             float visualScale = producesLargeSun ? 1.45f : 1f;
             int sunValue = producesLargeSun ? upgradedSunValue : normalSunValue;
-            GameObject sun = PlantVisualUtility.CreateSunVisual(transform.position + sunSpawnOffset, visualScale, sunValue);
-            Destroy(sun, sunLifetime);
+            PlantVisualUtility.CreateSunVisual(transform.position + sunSpawnOffset, visualScale, sunValue);
         }
 
         [ContextMenu("Upgrade Sun Production")]
@@ -75,8 +76,8 @@ namespace PVZ3D.Plants
             upgradeHalo = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             upgradeHalo.name = "Sunflower Upgrade Ring";
             upgradeHalo.transform.SetParent(transform, false);
-            upgradeHalo.transform.localPosition = new Vector3(0f, 0.04f, 0f);
-            upgradeHalo.transform.localScale = new Vector3(0.55f, 0.015f, 0.55f);
+            upgradeHalo.transform.localPosition = new Vector3(0f, 0.04f, 0f) * PlantVisualUtility.PrefabScale;
+            upgradeHalo.transform.localScale = new Vector3(0.55f, 0.015f, 0.55f) * PlantVisualUtility.PrefabScale;
 
             Renderer haloRenderer = upgradeHalo.GetComponent<Renderer>();
             if (haloRenderer != null)

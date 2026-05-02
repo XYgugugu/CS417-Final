@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 namespace PVZ3D.Plants
 {
@@ -11,8 +13,56 @@ namespace PVZ3D.Plants
 
     public static class PlantVisualUtility
     {
+        public const float PrefabScale = 0.75f;
+
         private static readonly Quaternion ModelRotation = Quaternion.Euler(0f, 90f, 0f);
         private static readonly Quaternion SunRotation = Quaternion.Euler(0f, 90f, 0f);
+
+        public static void EnsurePlantInteraction(Transform root)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            EnsurePlantInteraction(root.gameObject);
+        }
+
+        public static void EnsurePlantInteraction(GameObject root)
+        {
+            if (root == null)
+            {
+                return;
+            }
+
+            BoxCollider collider = root.GetComponent<BoxCollider>();
+            if (collider == null)
+            {
+                collider = root.AddComponent<BoxCollider>();
+                FitColliderToRenderers(root, collider);
+            }
+
+            collider.isTrigger = false;
+
+            Rigidbody body = root.GetComponent<Rigidbody>();
+            if (body == null)
+            {
+                body = root.AddComponent<Rigidbody>();
+            }
+
+            body.useGravity = true;
+            body.isKinematic = false;
+            body.constraints = RigidbodyConstraints.FreezeRotation;
+
+            XRGrabInteractable grab = root.GetComponent<XRGrabInteractable>();
+            if (grab == null)
+            {
+                grab = root.AddComponent<XRGrabInteractable>();
+            }
+
+            grab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
+            grab.throwOnDetach = false;
+        }
 
         public static void EnsurePlantVisual(Transform parent, PlantVisualKind kind)
         {
@@ -79,7 +129,7 @@ namespace PVZ3D.Plants
             GameObject root = new GameObject("Sun Visual");
             root.transform.position = position;
             root.transform.rotation = SunRotation;
-            root.transform.localScale = Vector3.one * Mathf.Max(0.1f, visualScale);
+            root.transform.localScale = Vector3.one * Mathf.Max(0.1f, visualScale) * PrefabScale;
 
             GameObject core = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             core.name = "Sun Core";
@@ -127,6 +177,8 @@ namespace PVZ3D.Plants
             visual.transform.localScale = kind == PlantVisualKind.WallNut
                 ? new Vector3(0.55f, 0.7f, 0.55f)
                 : new Vector3(0.35f, 0.9f, 0.35f);
+            visual.transform.localPosition *= PrefabScale;
+            visual.transform.localScale *= PrefabScale;
 
             Color color = kind switch
             {
@@ -186,6 +238,31 @@ namespace PVZ3D.Plants
             return bounds;
         }
 
+        private static void FitColliderToRenderers(GameObject root, BoxCollider collider)
+        {
+            Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                collider.center = new Vector3(0f, 0.45f, 0f) * PrefabScale;
+                collider.size = new Vector3(0.8f, 0.9f, 0.8f) * PrefabScale;
+                return;
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++)
+            {
+                bounds.Encapsulate(renderers[i].bounds);
+            }
+
+            collider.center = root.transform.InverseTransformPoint(bounds.center);
+            Vector3 localMin = root.transform.InverseTransformPoint(bounds.min);
+            Vector3 localMax = root.transform.InverseTransformPoint(bounds.max);
+            collider.size = new Vector3(
+                Mathf.Max(0.1f, Mathf.Abs(localMax.x - localMin.x)),
+                Mathf.Max(0.1f, Mathf.Abs(localMax.y - localMin.y)),
+                Mathf.Max(0.1f, Mathf.Abs(localMax.z - localMin.z)));
+        }
+
         private static string GetModelPath(PlantVisualKind kind)
         {
             return kind switch
@@ -199,14 +276,15 @@ namespace PVZ3D.Plants
 
         private static float GetTargetHeight(PlantVisualKind kind)
         {
-            return kind == PlantVisualKind.WallNut ? 0.85f : 0.95f;
+            float targetHeight = kind == PlantVisualKind.WallNut ? 0.85f : 0.95f;
+            return targetHeight * PrefabScale;
         }
 
         private static void ApplyVisualOffset(GameObject visual, PlantVisualKind kind)
         {
             if (kind == PlantVisualKind.WallNut)
             {
-                visual.transform.localPosition += Vector3.down * 0.04f;
+                visual.transform.localPosition += Vector3.down * 0.04f * PrefabScale;
             }
         }
 
