@@ -84,19 +84,31 @@ namespace PVZ3D.Plants
 
         private bool TryHitBetween(Vector3 start, Vector3 end)
         {
-            Vector3 center = (start + end) * 0.5f;
-            float radius = hitRadius + Vector3.Distance(start, end) * 0.5f;
-            Collider[] hits = Physics.OverlapSphere(center, radius);
+            Vector3 movement = end - start;
+            float distance = movement.magnitude;
+            if (distance <= 0.001f)
+            {
+                return TryHitOverlaps(start);
+            }
+
+            RaycastHit[] hits = Physics.SphereCastAll(
+                start,
+                hitRadius,
+                movement / distance,
+                distance,
+                ~0,
+                QueryTriggerInteraction.Collide);
 
             for (int i = 0; i < hits.Length; i++)
             {
-                if (TryHit(hits[i]))
+                Collider hitCollider = hits[i].collider;
+                if (!IsSelfCollider(hitCollider) && TryHit(hitCollider))
                 {
                     return true;
                 }
             }
 
-            return false;
+            return TryHitOverlaps(end);
         }
 
         private bool TryHit(Collider other)
@@ -106,16 +118,115 @@ namespace PVZ3D.Plants
                 return false;
             }
 
-            ZombieBase zombie = other.GetComponentInParent<ZombieBase>();
-            if (zombie == null)
+            ZombieBase zombie = ResolveZombie(other);
+            if (zombie == null && !IsZombieTagged(other))
             {
                 return false;
             }
 
-            zombie.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
-            hasHit = true;
-            Destroy(gameObject);
+            ConsumeProjectile();
+
+            if (zombie != null)
+            {
+                zombie.TakeDamage(damage);
+            }
+            else
+            {
+                other.SendMessageUpwards("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
+            }
+
             return true;
+        }
+
+        private void ConsumeProjectile()
+        {
+            hasHit = true;
+            enabled = false;
+
+            Collider[] colliders = GetComponentsInChildren<Collider>();
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i] != null)
+                {
+                    colliders[i].enabled = false;
+                }
+            }
+
+            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] != null)
+                {
+                    renderers[i].enabled = false;
+                }
+            }
+
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
+
+        private bool TryHitOverlaps(Vector3 position)
+        {
+            Collider[] hits = Physics.OverlapSphere(position, hitRadius, ~0, QueryTriggerInteraction.Collide);
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (!IsSelfCollider(hits[i]) && TryHit(hits[i]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsSelfCollider(Collider other)
+        {
+            return other == null || other.transform == transform || other.transform.IsChildOf(transform);
+        }
+
+        private static bool IsZombieTagged(Collider other)
+        {
+            Transform current = other.transform;
+            while (current != null)
+            {
+                if (current.CompareTag("Zombie"))
+                {
+                    return true;
+                }
+
+                current = current.parent;
+            }
+
+            Rigidbody attachedBody = other.attachedRigidbody;
+            if (attachedBody == null)
+            {
+                return false;
+            }
+
+            current = attachedBody.transform;
+            while (current != null)
+            {
+                if (current.CompareTag("Zombie"))
+                {
+                    return true;
+                }
+
+                current = current.parent;
+            }
+
+            return false;
+        }
+
+        private static ZombieBase ResolveZombie(Collider other)
+        {
+            ZombieBase zombie = other.GetComponentInParent<ZombieBase>();
+            if (zombie != null)
+            {
+                return zombie;
+            }
+
+            Rigidbody attachedBody = other.attachedRigidbody;
+            return attachedBody != null ? attachedBody.GetComponentInParent<ZombieBase>() : null;
         }
 
         private void EnsurePrefabSetup()
