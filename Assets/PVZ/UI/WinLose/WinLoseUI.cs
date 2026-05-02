@@ -1,16 +1,20 @@
 using TMPro;
+using PVZ3D.Core;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace PVZ3D.UI
 {
     /// <summary>
     /// Drives the Win / Lose overlay. Shown by <see cref="HUDController"/> when
-    /// <see cref="GameState.OnGameWon"/> or <see cref="GameState.OnGameLost"/>
-    /// fires. Owns the Restart and Quit buttons (1 pt each).
+    /// the active <see cref="GameManager"/> ends the game.
     /// </summary>
     public class WinLoseUI : MonoBehaviour
     {
+        [Tooltip("Optional explicit GameManager. If unset, the first GameManager in the scene is used.")]
+        [SerializeField] private GameManager gameManager;
+
         [Header("Title / Subtitle")]
         [SerializeField] private TMP_Text titleLabel;
         [SerializeField] private TMP_Text subtitleLabel;
@@ -24,9 +28,8 @@ namespace PVZ3D.UI
         [SerializeField] private Color loseTitleColor = new(0.85f, 0.2f, 0.2f);
 
         [Header("Subtitle Format")]
-        [Tooltip("Args: 0=current wave, 1=total waves, 2=zombies defeated, 3=highest wave reached")]
-        [SerializeField] private string subtitleFormat =
-            "Reached Wave {0} / {1}\nZombies defeated: {2}\nBest ever: Wave {3}";
+        [Tooltip("Args: 0=score")]
+        [SerializeField] private string subtitleFormat = "Score: {0}";
 
         [Header("Buttons")]
         [SerializeField] private Button restartButton;
@@ -55,19 +58,29 @@ namespace PVZ3D.UI
 
         private void Refresh()
         {
+            gameManager = ResolveGameManager();
+            bool didWin = gameManager != null && gameManager.DidWin;
+            int score = gameManager != null ? gameManager.Score : 0;
+
             if (titleLabel != null)
             {
-                titleLabel.text = GameState.DidWin ? winTitle : loseTitle;
-                titleLabel.color = GameState.DidWin ? winTitleColor : loseTitleColor;
+                titleLabel.text = didWin ? winTitle : loseTitle;
+                titleLabel.color = didWin ? winTitleColor : loseTitleColor;
             }
             if (subtitleLabel != null)
             {
-                subtitleLabel.text = string.Format(subtitleFormat,
-                    GameState.CurrentWave,
-                    Mathf.Max(1, GameState.TotalWaves),
-                    GameState.ZombiesDefeated,
-                    GameState.HighestWaveReached);
+                subtitleLabel.text = string.Format(subtitleFormat, score, 0, 0, score);
             }
+        }
+
+        private GameManager ResolveGameManager()
+        {
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            return gameManager;
         }
 
         // ============================================================
@@ -76,36 +89,21 @@ namespace PVZ3D.UI
 
         public void HandleRestart()
         {
-            if (GameSceneBootstrap.Instance != null)
-            {
-                GameSceneBootstrap.Instance.RestartGameplayScene();
-            }
-            else
-            {
-                // Fallback: reload current scene.
-                SaveSystem.Delete();
-                StartMenuRequest.RequestFreshGame();
-                UnityEngine.SceneManagement.SceneManager.LoadScene(
-                    UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-            }
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         public void HandleMainMenu()
         {
-            if (GameSceneBootstrap.Instance != null) GameSceneBootstrap.Instance.GoToStartMenu();
+            SceneManager.LoadScene("StartMenu");
         }
 
         public void HandleQuit()
         {
-            if (GameSceneBootstrap.Instance != null) GameSceneBootstrap.Instance.QuitGame();
-            else
-            {
 #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #else
-                Application.Quit();
+            Application.Quit();
 #endif
-            }
         }
     }
 }

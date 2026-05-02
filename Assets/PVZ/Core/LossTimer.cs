@@ -7,12 +7,14 @@ namespace PVZ3D.Core
     public class LossTimer
     {
         [SerializeField] private float timeRemain;
+        [SerializeField] private float totalTime;
 
         private bool isRunning;
         private bool isPaused;
         private Action onTimerFinished;
 
         public float TimeRemain => timeRemain;
+        public float TotalTime => totalTime;
         public bool IsRunning => isRunning;
         public bool IsPaused => isPaused;
 
@@ -26,6 +28,7 @@ namespace PVZ3D.Core
             StopTimer();
 
             timeRemain = Mathf.Max(0f, duration);
+            totalTime = timeRemain;
             isRunning = true;
             isPaused = false;
         }
@@ -39,6 +42,7 @@ namespace PVZ3D.Core
         public void StopTimer()
         {
             timeRemain = 0f;
+            totalTime = 0f;
             isRunning = false;
             isPaused = false;
         }

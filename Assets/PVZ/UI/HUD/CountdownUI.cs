@@ -1,4 +1,5 @@
 using TMPro;
+using PVZ3D.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,9 @@ namespace PVZ3D.UI
     /// </summary>
     public class CountdownUI : MonoBehaviour
     {
+        [Tooltip("Optional explicit GameManager. If unset, the first GameManager in the scene is used.")]
+        [SerializeField] private GameManager gameManager;
+
         [Header("Time Label")]
         [SerializeField] private TMP_Text timeLabel;
         [Tooltip("How the time is rendered. Args: 0=minutes (zero-padded), 1=seconds (zero-padded), 2=total seconds (int).")]
@@ -40,6 +44,9 @@ namespace PVZ3D.UI
         private RectTransform _rt;
         private Vector3 _baseScale = Vector3.one;
         private float _pulseT;
+        private float _lastRemain = float.NaN;
+        private float _lastTotal = float.NaN;
+        private bool _lastRunning;
 
         private void Awake()
         {
@@ -50,20 +57,13 @@ namespace PVZ3D.UI
 
         private void OnEnable()
         {
-            GameState.OnLossTimerTick += HandleTick;
-            GameState.OnStateReset += HandleReset;
-            ApplyVisible(GameState.LossTimerRunning);
-            HandleTick(GameState.LossTimerRemain, GameState.LossTimerTotal);
-        }
-
-        private void OnDisable()
-        {
-            GameState.OnLossTimerTick -= HandleTick;
-            GameState.OnStateReset -= HandleReset;
+            RefreshTimer(true);
         }
 
         private void Update()
         {
+            RefreshTimer(false);
+
             // Only animate the warning pulse when actually below threshold.
             if (!ShouldPulse())
             {
@@ -77,14 +77,53 @@ namespace PVZ3D.UI
 
         private bool ShouldPulse()
         {
-            return GameState.LossTimerRunning &&
-                   GameState.LossTimerRemain > 0f &&
-                   GameState.LossTimerRemain <= warningThreshold;
+            LossTimer lossTimer = ResolveLossTimer();
+            return lossTimer != null &&
+                   lossTimer.IsRunning &&
+                   lossTimer.TimeRemain > 0f &&
+                   lossTimer.TimeRemain <= warningThreshold;
         }
 
-        private void HandleTick(float remain, float total)
+        private void RefreshTimer(bool force)
         {
-            ApplyVisible(GameState.LossTimerRunning || !hideWhenIdle);
+            LossTimer lossTimer = ResolveLossTimer();
+            if (lossTimer == null)
+            {
+                ApplyVisible(!hideWhenIdle);
+                return;
+            }
+
+            float remain = lossTimer.TimeRemain;
+            float total = lossTimer.TotalTime;
+            bool running = lossTimer.IsRunning;
+
+            if (!force &&
+                Mathf.Approximately(remain, _lastRemain) &&
+                Mathf.Approximately(total, _lastTotal) &&
+                running == _lastRunning)
+            {
+                return;
+            }
+
+            _lastRemain = remain;
+            _lastTotal = total;
+            _lastRunning = running;
+            Repaint(remain, total, running);
+        }
+
+        private LossTimer ResolveLossTimer()
+        {
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            return gameManager != null ? gameManager.LossTimer : null;
+        }
+
+        private void Repaint(float remain, float total, bool running)
+        {
+            ApplyVisible(running || !hideWhenIdle);
 
             int totalSeconds = Mathf.CeilToInt(remain);
             int minutes = totalSeconds / 60;
@@ -98,11 +137,6 @@ namespace PVZ3D.UI
             var c = warning ? warningColor : normalColor;
             if (timeLabel != null) timeLabel.color = c;
             if (fillImage != null) fillImage.color = c;
-        }
-
-        private void HandleReset()
-        {
-            ApplyVisible(GameState.LossTimerRunning || !hideWhenIdle);
         }
 
         private void ApplyVisible(bool visible)

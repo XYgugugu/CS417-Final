@@ -1,16 +1,15 @@
 using TMPro;
+using PVZ3D.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace PVZ3D.UI
 {
-    /// <summary>
-    /// Drives a fillable health bar from <see cref="GameState.OnHealthChanged"/>.
-    /// Attach to the HealthBar GameObject; assign <see cref="fillImage"/> to a
-    /// child Image with Image Type = Filled.
-    /// </summary>
     public class HealthBarUI : MonoBehaviour
     {
+        [Tooltip("Optional explicit GameManager. If unset, the first GameManager in the scene is used.")]
+        [SerializeField] private GameManager gameManager;
+
         [Tooltip("Image with Image Type = Filled (Horizontal). Fill amount drives the bar width.")]
         [SerializeField] private Image fillImage;
 
@@ -23,19 +22,50 @@ namespace PVZ3D.UI
         [Tooltip("Color when HP approaches 0.")]
         [SerializeField] private Color emptyColor = new(0.85f, 0.2f, 0.2f);
 
+        private int lastHealth = int.MinValue;
+        private int lastMaxHealth = int.MinValue;
+
         private void OnEnable()
         {
-            GameState.OnHealthChanged += HandleHealthChanged;
-            // Repaint immediately to match current state.
-            HandleHealthChanged(GameState.Health, GameState.MaxHealth);
+            Refresh();
         }
 
-        private void OnDisable()
+        private void Update()
         {
-            GameState.OnHealthChanged -= HandleHealthChanged;
+            Refresh();
         }
 
-        private void HandleHealthChanged(int current, int max)
+        private void Refresh()
+        {
+            PlayerManager playerManager = ResolvePlayerManager();
+            if (playerManager == null)
+            {
+                return;
+            }
+
+            int current = playerManager.HP;
+            int max = playerManager.MaxHP;
+            if (current == lastHealth && max == lastMaxHealth)
+            {
+                return;
+            }
+
+            lastHealth = current;
+            lastMaxHealth = max;
+            Repaint(current, max);
+        }
+
+        private PlayerManager ResolvePlayerManager()
+        {
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            return gameManager != null ? gameManager.PlayerManager : null;
+        }
+
+        private void Repaint(int current, int max)
         {
             if (max <= 0) max = 1;
             var pct = Mathf.Clamp01(current / (float)max);

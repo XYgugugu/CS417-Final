@@ -1,3 +1,4 @@
+using PVZ3D.Core;
 using UnityEngine;
 
 namespace PVZ3D.UI
@@ -9,6 +10,9 @@ namespace PVZ3D.UI
     /// </summary>
     public class HUDController : MonoBehaviour
     {
+        [Tooltip("Optional explicit GameManager. If unset, the first GameManager in the scene is used.")]
+        [SerializeField] private GameManager gameManager;
+
         [Header("Canvases")]
         [Tooltip("The main gameplay HUD root (kept active during play, hidden on win/lose).")]
         [SerializeField] private GameObject hudRoot;
@@ -16,49 +20,53 @@ namespace PVZ3D.UI
         [Tooltip("The Win/Lose overlay root (hidden during play, shown on game over).")]
         [SerializeField] private GameObject winLoseRoot;
 
-        [Tooltip("Optional toast that pops up after applying idle progress.")]
-        [SerializeField] private IdleProgressToastUI idleToast;
-
         private void OnEnable()
         {
-            GameState.OnGameWon += HandleGameOver;
-            GameState.OnGameLost += HandleGameOver;
-            GameState.OnStateReset += HandleReset;
-
-            if (hudRoot != null) hudRoot.SetActive(true);
-            if (winLoseRoot != null) winLoseRoot.SetActive(false);
-
-            if (idleToast != null && GameSceneBootstrap.Instance != null)
+            gameManager = ResolveGameManager();
+            if (gameManager != null)
             {
-                GameSceneBootstrap.Instance.OnIdleProgressApplied += idleToast.Show;
+                gameManager.OnGameEnded += HandleGameOver;
             }
+
+            Refresh();
         }
 
         private void OnDisable()
         {
-            GameState.OnGameWon -= HandleGameOver;
-            GameState.OnGameLost -= HandleGameOver;
-            GameState.OnStateReset -= HandleReset;
-
-            if (idleToast != null && GameSceneBootstrap.Instance != null)
+            if (gameManager != null)
             {
-                GameSceneBootstrap.Instance.OnIdleProgressApplied -= idleToast.Show;
+                gameManager.OnGameEnded -= HandleGameOver;
             }
         }
 
-        private void HandleGameOver()
+        private GameManager ResolveGameManager()
         {
-            if (winLoseRoot != null) winLoseRoot.SetActive(true);
-            // We intentionally LEAVE the HUD visible behind the overlay so the
-            // player can still see the final scoreboard. If you'd rather hide
-            // it, uncomment the line below.
-            // if (hudRoot != null) hudRoot.SetActive(false);
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            return gameManager;
         }
 
-        private void HandleReset()
+        private void HandleGameOver(bool didWin)
         {
-            if (hudRoot != null) hudRoot.SetActive(true);
-            if (winLoseRoot != null) winLoseRoot.SetActive(false);
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            bool isGameOver = gameManager != null && gameManager.GameOver;
+
+            if (hudRoot != null)
+            {
+                hudRoot.SetActive(true);
+            }
+
+            if (winLoseRoot != null)
+            {
+                winLoseRoot.SetActive(isGameOver);
+            }
         }
     }
 }
