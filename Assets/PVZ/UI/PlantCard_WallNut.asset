@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f02865ebae02e4c4aadbffd3784b6d53, type: 3}
-  m_Name: PlantCard_Sunflower
+  m_Name: PlantCard_WallNut
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.PlantCardData
-  plantId: sunflower
-  displayName: Sunflower
-  icon: {fileID: 21300000, guid: 3925366335d484572a893c441d952e9b, type: 3}
+  plantId: wallnut
+  displayName: Wall-nut
+  icon: {fileID: 21300000, guid: a0224fc1828b54f1faf3f9e1252c0e2a, type: 3}
   sunCost: 50
-  cooldownSeconds: 7.5
+  cooldownSeconds: 15
   unlockedByDefault: 1

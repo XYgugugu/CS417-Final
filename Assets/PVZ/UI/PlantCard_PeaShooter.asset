@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 299722045840d4414b22762ecead696a, type: 3}
+  m_Script: {fileID: 11500000, guid: f02865ebae02e4c4aadbffd3784b6d53, type: 3}
   m_Name: PlantCard_PeaShooter
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.PlantCardData
   plantId: pea_shooter
