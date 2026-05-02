@@ -193,6 +193,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dr_Edgar_Zomboss
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f3dd02bdb9160894eba2c7c28f1db798, type: 3}
+      propertyPath: m_TagString
+      value: Zombie
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

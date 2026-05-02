@@ -193,6 +193,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coffin_Zombie
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b39d352af15218f4597f7202bd62a912, type: 3}
+      propertyPath: m_TagString
+      value: Zombie
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -290,7 +294,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55df1d34631f24eb8abb5cb6118c3ed7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PathFollow
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Zombies.PathFollow
   moveSpeed: 0.2
   destination: 2
 --- !u!114 &365169656178120150

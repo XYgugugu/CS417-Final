@@ -39,6 +39,11 @@ namespace PVZ3D.Zombies
         private PlantBase targetPlant;
         private float dropOffsetY = 0.3f;
 
+        private void Awake()
+        {
+            EnsureRuntimeSetup();
+        }
+
         void Start()
         {
             currentHealth = baseHealth;
@@ -99,7 +104,7 @@ namespace PVZ3D.Zombies
 
         private void OnTriggerEnter(Collider other)
         {
-            PlantBase plant = other.GetComponent<PlantBase>();
+            PlantBase plant = other.GetComponentInParent<PlantBase>();
 
             if (plant != null)
             {
@@ -107,6 +112,42 @@ namespace PVZ3D.Zombies
                 attackTimer = 0f;
                 movement?.StopMoving();
             }
+        }
+
+        private void EnsureRuntimeSetup()
+        {
+            if (!CompareTag("Zombie"))
+            {
+                gameObject.tag = "Zombie";
+            }
+
+            Rigidbody body = GetComponent<Rigidbody>();
+            if (body == null)
+            {
+                body = gameObject.AddComponent<Rigidbody>();
+            }
+
+            body.useGravity = false;
+            body.isKinematic = true;
+            body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+
+            Collider hitbox = GetComponent<Collider>();
+            if (hitbox == null)
+            {
+                CapsuleCollider capsule = gameObject.AddComponent<CapsuleCollider>();
+                hitbox = capsule;
+            }
+
+            CapsuleCollider capsuleHitbox = hitbox as CapsuleCollider;
+            if (capsuleHitbox != null)
+            {
+                capsuleHitbox.radius = Mathf.Max(capsuleHitbox.radius, 0.65f);
+                capsuleHitbox.height = Mathf.Max(capsuleHitbox.height, 1.8f);
+                capsuleHitbox.direction = 1;
+                capsuleHitbox.center = new Vector3(0f, 0.65f, 0f);
+            }
+
+            hitbox.isTrigger = true;
         }
 
         private IEnumerator AttackJuice()
