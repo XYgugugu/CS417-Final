@@ -153,6 +153,64 @@ namespace PVZ3D.Plants
             return root;
         }
 
+        public static void CreateParticleBurst(
+            Vector3 position,
+            Color startColor,
+            Color endColor,
+            int count,
+            float startSize,
+            float speed,
+            float lifetime,
+            float radius,
+            string burstName)
+        {
+            GameObject burst = new GameObject(burstName);
+            burst.transform.position = position;
+
+            ParticleSystem particles = burst.AddComponent<ParticleSystem>();
+            particles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+            ParticleSystem.MainModule main = particles.main;
+            main.duration = 0.2f;
+            main.startLifetime = Mathf.Max(0.05f, lifetime);
+            main.startSpeed = Mathf.Max(0f, speed);
+            main.startSize = Mathf.Max(0.01f, startSize);
+            main.startColor = startColor;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.stopAction = ParticleSystemStopAction.Destroy;
+
+            Gradient gradient = new Gradient();
+            gradient.SetKeys(
+                new[]
+                {
+                    new GradientColorKey(startColor, 0f),
+                    new GradientColorKey(endColor, 1f)
+                },
+                new[]
+                {
+                    new GradientAlphaKey(startColor.a, 0f),
+                    new GradientAlphaKey(0f, 1f)
+                });
+
+            ParticleSystem.ColorOverLifetimeModule colorOverLifetime = particles.colorOverLifetime;
+            colorOverLifetime.enabled = true;
+            colorOverLifetime.color = gradient;
+
+            ParticleSystem.EmissionModule emission = particles.emission;
+            emission.rateOverTime = 0f;
+            emission.SetBursts(new[]
+            {
+                new ParticleSystem.Burst(0f, (short)Mathf.Clamp(count, 1, 200))
+            });
+
+            ParticleSystem.ShapeModule shape = particles.shape;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = Mathf.Max(0.01f, radius);
+
+            particles.Play();
+            Object.Destroy(burst, lifetime + 0.5f);
+        }
+
         private static bool HasVisibleRenderer(Transform parent)
         {
             Renderer[] renderers = parent.GetComponentsInChildren<Renderer>(true);

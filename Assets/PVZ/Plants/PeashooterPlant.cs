@@ -24,10 +24,18 @@ namespace PVZ3D.Plants
             ConfigureHurtbox(
                 new Vector3(0f, 0.45f, 0f) * PlantVisualUtility.PrefabScale,
                 new Vector3(0.8f, 0.9f, 0.8f) * PlantVisualUtility.PrefabScale);
+            RefreshFeedbackColors();
             EnsureHurtbox();
             PlantVisualUtility.EnsurePlantVisual(transform, PlantVisualKind.Peashooter);
             PlantVisualUtility.EnsurePlantInteraction(transform);
             nextFireTime = Time.time + GetCurrentFireInterval();
+        }
+
+        protected override void RefreshFeedbackColors()
+        {
+            ConfigureFeedbackColors(
+                new Color(0.18f, 0.85f, 0.24f, 1f),
+                new Color(0.04f, 0.5f, 0.16f, 0.65f));
         }
 
         private void Update()

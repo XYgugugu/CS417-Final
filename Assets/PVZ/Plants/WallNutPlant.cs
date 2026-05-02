@@ -15,9 +15,17 @@ namespace PVZ3D.Plants
             ConfigureHurtbox(
                 new Vector3(0f, 0.5f, 0f) * PlantVisualUtility.PrefabScale,
                 Vector3.one * PlantVisualUtility.PrefabScale);
+            RefreshFeedbackColors();
             EnsureHurtbox();
             PlantVisualUtility.EnsurePlantVisual(transform, PlantVisualKind.WallNut);
             PlantVisualUtility.EnsurePlantInteraction(transform);
+        }
+
+        protected override void RefreshFeedbackColors()
+        {
+            ConfigureFeedbackColors(
+                new Color(0.68f, 0.4f, 0.16f, 1f),
+                new Color(0.9f, 0.62f, 0.28f, 0.65f));
         }
 
         [ContextMenu("Upgrade To Tall-Nut")]
