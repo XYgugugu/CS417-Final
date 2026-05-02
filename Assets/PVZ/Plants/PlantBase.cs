@@ -1,4 +1,5 @@
 using UnityEngine;
+using PVZ3D.Region;
 
 namespace PVZ3D.Plants
 {
@@ -8,10 +9,13 @@ namespace PVZ3D.Plants
         [SerializeField] private float currentHealth;
         [SerializeField] private Vector3 hurtboxCenter = new Vector3(0f, 0.45f, 0f);
         [SerializeField] private Vector3 hurtboxSize = new Vector3(0.8f, 0.9f, 0.8f);
+        [SerializeField] private bool isPlaced;
 
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
         public bool IsDead { get; private set; }
+        public bool IsPlaced => isPlaced;
+        public GridCell OccupiedCell { get; private set; }
 
         protected virtual void Awake()
         {
@@ -67,8 +71,8 @@ namespace PVZ3D.Plants
                 body = gameObject.AddComponent<Rigidbody>();
             }
 
-            body.useGravity = false;
-            body.isKinematic = true;
+            body.useGravity = true;
+            body.isKinematic = false;
         }
 
         public virtual void TakeDamage(float amount)
@@ -85,6 +89,33 @@ namespace PVZ3D.Plants
             }
         }
 
+        public virtual bool CanPlaceOn(GridCell cell)
+        {
+            return !IsDead && cell != null && (OccupiedCell == null || OccupiedCell == cell);
+        }
+
+        public virtual void PlaceOnCell(GridCell cell)
+        {
+            if (!CanPlaceOn(cell))
+            {
+                return;
+            }
+
+            OccupiedCell = cell;
+            isPlaced = true;
+        }
+
+        public virtual void RemoveFromCell(GridCell cell)
+        {
+            if (OccupiedCell != cell)
+            {
+                return;
+            }
+
+            OccupiedCell = null;
+            isPlaced = false;
+        }
+
         protected virtual void Die()
         {
             if (IsDead)
@@ -93,6 +124,8 @@ namespace PVZ3D.Plants
             }
 
             IsDead = true;
+            OccupiedCell?.ClearPlant(this);
+            OccupiedCell = null;
             SpawnDeathFeedback();
             Destroy(gameObject);
         }
