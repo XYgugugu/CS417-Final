@@ -222,8 +222,14 @@ namespace PVZ3D.Plants
             return settledMaterial;
         }
 
-        private void Collect()
+        [ContextMenu("Collect Sun")]
+        public void Collect()
         {
+            if (collected)
+            {
+                return;
+            }
+
             collected = true;
 
             GameManager manager = ResolveGameManager();
@@ -232,7 +238,44 @@ namespace PVZ3D.Plants
                 manager.PlantsEconomy.CollectSun(value);
             }
 
-            Destroy(gameObject);
+            PlayCollectedFeedback();
+            SetVisible(false);
+            Destroy(gameObject, 0.35f);
+        }
+
+        public void PlayCollectedFeedback()
+        {
+            PlantVisualUtility.CreateParticleBurst(
+                transform.position,
+                new Color(1f, 0.94f, 0.18f, 1f),
+                new Color(1f, 0.56f, 0.05f, 0.8f),
+                36,
+                0.07f,
+                1.8f,
+                0.45f,
+                0.18f,
+                "Sun Collected Feedback");
+        }
+
+        private void SetVisible(bool visible)
+        {
+            Renderer[] sunRenderers = GetComponentsInChildren<Renderer>(true);
+            for (int i = 0; i < sunRenderers.Length; i++)
+            {
+                if (sunRenderers[i] != null)
+                {
+                    sunRenderers[i].enabled = visible;
+                }
+            }
+
+            Collider[] sunColliders = GetComponentsInChildren<Collider>(true);
+            for (int i = 0; i < sunColliders.Length; i++)
+            {
+                if (sunColliders[i] != null)
+                {
+                    sunColliders[i].enabled = visible;
+                }
+            }
         }
 
         private GameManager ResolveGameManager()
