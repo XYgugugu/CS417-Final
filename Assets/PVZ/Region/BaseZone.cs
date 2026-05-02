@@ -4,6 +4,8 @@ using PVZ3D.Core;
 
 public class BaseZone : MonoBehaviour
 {
+    [SerializeField] private int fallbackDamageAmount = 0;
+
     private GameManager gm;
 
     private void Awake()
@@ -13,12 +15,26 @@ public class BaseZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        ZombieBase zombie = other.GetComponentInParent<ZombieBase>();
-        if (zombie == null) return;
+        ZombieBase zombie = ResolveZombie(other);
+        if (zombie == null && !IsZombieTagged(other))
+        {
+            return;
+        }
 
-        TriggerBaseDamage(20);
+        int damageAmount = zombie != null
+            ? Mathf.CeilToInt(zombie.AttackDamage)
+            : fallbackDamageAmount;
 
-        Destroy(zombie.gameObject);
+        TriggerBaseDamage(damageAmount);
+
+        if (zombie != null)
+        {
+            Destroy(zombie.gameObject);
+        }
+        else
+        {
+            Destroy(GetTaggedZombieRoot(other));
+        }
     }
 
     private void TriggerBaseDamage(int amount)
@@ -46,7 +62,66 @@ public class BaseZone : MonoBehaviour
     [ContextMenu("Test Base Damage")]
     public void TestBaseDamage()
     {
-        TriggerBaseDamage(20);
+        TriggerBaseDamage(fallbackDamageAmount);
     }
 
+    private static ZombieBase ResolveZombie(Collider other)
+    {
+        if (other == null)
+        {
+            return null;
+        }
+
+        ZombieBase zombie = other.GetComponentInParent<ZombieBase>();
+        if (zombie != null)
+        {
+            return zombie;
+        }
+
+        Rigidbody attachedBody = other.attachedRigidbody;
+        return attachedBody != null ? attachedBody.GetComponentInParent<ZombieBase>() : null;
+    }
+
+    private static bool IsZombieTagged(Collider other)
+    {
+        return GetTaggedZombieRoot(other) != null;
+    }
+
+    private static GameObject GetTaggedZombieRoot(Collider other)
+    {
+        if (other == null)
+        {
+            return null;
+        }
+
+        Transform current = other.transform;
+        while (current != null)
+        {
+            if (current.CompareTag("Zombie"))
+            {
+                return current.gameObject;
+            }
+
+            current = current.parent;
+        }
+
+        Rigidbody attachedBody = other.attachedRigidbody;
+        if (attachedBody == null)
+        {
+            return null;
+        }
+
+        current = attachedBody.transform;
+        while (current != null)
+        {
+            if (current.CompareTag("Zombie"))
+            {
+                return current.gameObject;
+            }
+
+            current = current.parent;
+        }
+
+        return null;
+    }
 }

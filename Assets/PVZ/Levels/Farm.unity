@@ -10152,6 +10152,73 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: aaff327437b0be14f9c6d1be9b411708, type: 3}
   m_PrefabInstance: {fileID: 1356063189}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1370544455
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1370544458}
+  - component: {fileID: 1370544457}
+  - component: {fileID: 1370544456}
+  m_Layer: 0
+  m_Name: Base
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1370544456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370544455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1931e3d72e889a14b92abcea25747a82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseZone
+  fallbackDamageAmount: 20
+--- !u!65 &1370544457
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370544455}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1370544458
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370544455}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.511, y: 0.5, z: -7.723}
+  m_LocalScale: {x: 3.9956, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1384157534
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15001,6 +15068,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 925715082}
     - target: {fileID: 1089120485224623729, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089120485224623729, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
       propertyPath: m_fontMaterials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -15016,6 +15087,10 @@ PrefabInstance:
       propertyPath: 'm_fontSharedMaterials.Array.data[0]'
       value: 
       objectReference: {fileID: 925715082}
+    - target: {fileID: 1099276147805360235, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3768620991195083672, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
       propertyPath: m_Name
       value: HUDCanvas
@@ -15049,6 +15124,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1579266982}
     - target: {fileID: 5427877541871976742, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 5427877541871976742, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
       propertyPath: m_fontMaterials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -15096,6 +15175,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 1186491695}
+    - target: {fileID: 5966973922088699968, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 5966973922088699968, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
       propertyPath: m_fontMaterials.Array.size
       value: 1
@@ -15330,3 +15413,4 @@ SceneRoots:
   - {fileID: 102130003}
   - {fileID: 86544884}
   - {fileID: 413067888}
+  - {fileID: 1370544458}

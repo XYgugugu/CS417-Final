@@ -39,6 +39,8 @@ namespace PVZ3D.Zombies
         private PlantBase targetPlant;
         private float dropOffsetY = 0.3f;
 
+        public float AttackDamage => attackDamage;
+
         private void Awake()
         {
             EnsureRuntimeSetup();
