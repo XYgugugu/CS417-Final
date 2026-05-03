@@ -782,6 +782,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b09425b2548ffd741871028d29091198, type: 3}
+--- !u!1 &413067889 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1020390907350327124, guid: b09425b2548ffd741871028d29091198, type: 3}
+  m_PrefabInstance: {fileID: 413067888}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &436139257
 GameObject:
   m_ObjectHideFlags: 0
@@ -2247,7 +2252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::tp
   portalCamera: {fileID: 819581891}
-  thePlayer: {fileID: 0}
+  thePlayer: {fileID: 413067889}
 --- !u!136 &1201391996
 CapsuleCollider:
   m_ObjectHideFlags: 0
