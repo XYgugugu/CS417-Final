@@ -290,7 +290,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4287427327
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -971,6 +971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.PlantCardSlotUI
   card: {fileID: 11400000, guid: 69e9b9f1c89c3433c8f4ae85373d70c8, type: 2}
+  gameManager: {fileID: 0}
   iconImage: {fileID: 3145032573548381186}
   cooldownOverlay: {fileID: 4982990427164817726}
   cooldownStartAlpha: 0.7
@@ -983,143 +984,6 @@ MonoBehaviour:
   readyFlashDuration: 0.45
   readyFlashScale: 1.18
   readyFlashColor: {r: 1, g: 0.95, b: 0.55, a: 0.85}
---- !u!1 &1940096279527318963
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6180048502498839153}
-  - component: {fileID: 6406435545539258492}
-  - component: {fileID: 5966973922088699968}
-  m_Layer: 0
-  m_Name: HighestLabel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6180048502498839153
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940096279527318963}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2860564593327703635}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -20, y: 12}
-  m_SizeDelta: {x: 320, y: 30}
-  m_Pivot: {x: 1, y: 0}
---- !u!222 &6406435545539258492
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940096279527318963}
-  m_CullTransparentMesh: 1
---- !u!114 &5966973922088699968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940096279527318963}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: 'Best: Wave 0'
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2add48144d3d148f79bfb7a2b3c735b2, type: 2}
-  m_sharedMaterial: {fileID: -9067978705179339450, guid: 2add48144d3d148f79bfb7a2b3c735b2, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4291611852
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
-  m_fontStyle: 0
-  m_HorizontalAlignment: 4
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 0
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &2376856937272365972
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,6 +1074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 735f23e08a5604eadb0b904c7662e520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.CoinCounterUI
+  gameManager: {fileID: 0}
   label: {fileID: 839238881643974106}
   format: '{0}'
 --- !u!1 &3303190533704567782
@@ -1302,6 +1167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95666bcefd5d144978c2acd9dec9d53a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.CountdownUI
+  gameManager: {fileID: 0}
   timeLabel: {fileID: 1089120485224623729}
   timeFormat: '{0:D2}:{1:D2}'
   fillImage: {fileID: 2787532040966823149}
@@ -1544,6 +1410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a1c89bc37d534f48837a13152c772c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.SunCounterUI
+  gameManager: {fileID: 0}
   label: {fileID: 8752493135771697937}
   format: '{0}'
   pulseOnGain: 1
@@ -1584,7 +1451,6 @@ RectTransform:
   - {fileID: 8616336763159737427}
   - {fileID: 4021708106562901131}
   - {fileID: 7245205591424411398}
-  - {fileID: 6180048502498839153}
   m_Father: {fileID: 6155734077141433277}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -1642,15 +1508,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6405fcfd775746caa87e8d5e7cf9130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.ScoreboardUI
+  gameManager: {fileID: 0}
   waveLabel: {fileID: 7455097002656459066}
-  waveFormat: Wave {0} / {1}
-  waveProgressFill: {fileID: 512210130564495810}
-  flagTransform: {fileID: 5542292293842134028}
-  fillLerpSpeed: 4
+  waveFormat: 'Wave {0} / {1} | Score: {2}'
   killsLabel: {fileID: 5427877541871976742}
   killsFormat: 'Zombies: {0}'
-  highestLabel: {fileID: 5966973922088699968}
-  highestFormat: 'Best: Wave {0}'
+  scoreLabel: {fileID: 7455097002656459066}
+  scoreFormat: 'Score: {0}'
+  progressFill: {fileID: 512210130564495810}
 --- !u!1 &3617464805452433593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1904,9 +1769,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e38a967681641e0b41e1343f2fd1ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.HUDController
+  gameManager: {fileID: 0}
   hudRoot: {fileID: 1145695024527341338}
   winLoseRoot: {fileID: 6485112442515723548}
-  idleToast: {fileID: 0}
 --- !u!1 &3842936525835338420
 GameObject:
   m_ObjectHideFlags: 0
@@ -2287,6 +2152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ade5da10cde534a48b185d7375fed008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.HealthBarUI
+  gameManager: {fileID: 0}
   fillImage: {fileID: 3631688600403055714}
   label: {fileID: 9129760600894836439}
   fullColor: {r: 0.9, g: 0.25, b: 0.4, a: 1}
@@ -3084,6 +2950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a74c3524310ba4ceab15d1800d9f9ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.WinLoseUI
+  gameManager: {fileID: 0}
   titleLabel: {fileID: 6469957864563831148}
   subtitleLabel: {fileID: 1382615358215842991}
   winTitle: VICTORY!
@@ -3173,7 +3040,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4291611852
+    rgba: 4294967295
   m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
