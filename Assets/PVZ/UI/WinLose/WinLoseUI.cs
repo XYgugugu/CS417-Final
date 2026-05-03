@@ -28,8 +28,8 @@ namespace PVZ3D.UI
         [SerializeField] private Color loseTitleColor = new(0.85f, 0.2f, 0.2f);
 
         [Header("Subtitle Format")]
-        [Tooltip("Args: 0=score")]
-        [SerializeField] private string subtitleFormat = "Score: {0}";
+        [Tooltip("Args: 0=current wave, 1=total waves, 2=zombie kills, 3=score")]
+        [SerializeField] private string subtitleFormat = "Score: {3}";
 
         [Header("Buttons")]
         [SerializeField] private Button restartButton;
@@ -61,6 +61,9 @@ namespace PVZ3D.UI
             gameManager = ResolveGameManager();
             bool didWin = gameManager != null && gameManager.DidWin;
             int score = gameManager != null ? gameManager.Score : 0;
+            int currentWave = gameManager != null ? gameManager.CurrentWave : 0;
+            int totalWaves = gameManager != null ? gameManager.TotalWaves : 0;
+            int kills = gameManager != null ? gameManager.ZombieKills : 0;
 
             if (titleLabel != null)
             {
@@ -69,7 +72,7 @@ namespace PVZ3D.UI
             }
             if (subtitleLabel != null)
             {
-                subtitleLabel.text = string.Format(subtitleFormat, score, 0, 0, score);
+                subtitleLabel.text = string.Format(subtitleFormat, currentWave, totalWaves, kills, score);
             }
         }
 
