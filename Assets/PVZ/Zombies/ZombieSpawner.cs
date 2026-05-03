@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using PVZ3D.Core;
 
 namespace PVZ3D.Zombies
 {
  public class ZombieSpawner : MonoBehaviour
     {
+        [SerializeField] private GameManager gameManager;
         [SerializeField] private GameObject firstZombie;
         [SerializeField] private GameObject[] zombiePrefabs; 
         [SerializeField] public Transform[] spawnPoints;
@@ -18,6 +20,7 @@ namespace PVZ3D.Zombies
 
         void Start()
         {
+            ResolveGameManager()?.SetWaveProgress(0, totalWaves);
             StartCoroutine(SpawnWaves());
         }
 
@@ -34,6 +37,7 @@ namespace PVZ3D.Zombies
                 }
                 yield return new WaitForSeconds(5f);
 
+                ResolveGameManager()?.SetWaveProgress(wave, totalWaves);
                 Debug.Log("Wave " + wave + " starting!");
 
                 for (int i = 0; i < zombiesPerWave; i++)
@@ -73,6 +77,16 @@ namespace PVZ3D.Zombies
                 spawnPos,
                 Quaternion.identity
             );
+        }
+
+        private GameManager ResolveGameManager()
+        {
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            return gameManager;
         }
     }
 }
