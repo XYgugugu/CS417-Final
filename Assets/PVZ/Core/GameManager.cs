@@ -1,4 +1,6 @@
 using System;
+using PVZ3D.Plants;
+using PVZ3D.Zombies;
 using UnityEngine;
 
 namespace PVZ3D.Core
@@ -77,6 +79,7 @@ namespace PVZ3D.Core
 
             gameOver = true;
             didWin = win;
+            RemoveGameplayObjects();
             OnGameEnded?.Invoke(didWin);
             Debug.Log(didWin ? "Victory." : "Game Over.");
         }
@@ -112,6 +115,35 @@ namespace PVZ3D.Core
             currentWave = clampedWave;
             totalWaves = clampedTotal;
             OnStatsChanged?.Invoke();
+        }
+
+        private void RemoveGameplayObjects()
+        {
+            foreach (PlantBase plant in FindObjectsByType<PlantBase>(FindObjectsSortMode.None))
+            {
+                plant.OccupiedCell?.ClearPlant(plant);
+                Destroy(plant.gameObject);
+            }
+
+            foreach (ZombieBase zombie in FindObjectsByType<ZombieBase>(FindObjectsSortMode.None))
+            {
+                Destroy(zombie.gameObject);
+            }
+
+            foreach (ZombieSpawner spawner in FindObjectsByType<ZombieSpawner>(FindObjectsSortMode.None))
+            {
+                Destroy(spawner.gameObject);
+            }
+
+            foreach (PlantShopItem shopItem in FindObjectsByType<PlantShopItem>(FindObjectsSortMode.None))
+            {
+                Destroy(shopItem.transform.root.gameObject);
+            }
+
+            foreach (ToolShopItem shopItem in FindObjectsByType<ToolShopItem>(FindObjectsSortMode.None))
+            {
+                Destroy(shopItem.transform.root.gameObject);
+            }
         }
     }
 

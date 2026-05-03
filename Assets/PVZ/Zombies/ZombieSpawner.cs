@@ -62,6 +62,13 @@ namespace PVZ3D.Zombies
 
             Debug.Log("All waves finished!");
             OnAllWavesFinished?.Invoke();
+
+            while (FindObjectsByType<ZombieBase>(FindObjectsSortMode.None).Length > 0)
+            {
+                yield return null;
+            }
+
+            ResolveGameManager()?.WinGame();
         }
 
         private void SpawnZombie()
