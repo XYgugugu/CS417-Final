@@ -6,6 +6,7 @@ namespace PVZ3D.Core
     public class GameManager : MonoBehaviour
     {
         public event Action<bool> OnGameEnded;
+        public event Action OnStatsChanged;
 
         [Header("Player")]
         [SerializeField] private PlayerManager playerManager = new PlayerManager();
@@ -32,6 +33,15 @@ namespace PVZ3D.Core
 
         [SerializeField] private int score;
         public int Score => score;
+
+        [SerializeField] private int zombieKills;
+        public int ZombieKills => zombieKills;
+
+        [SerializeField] private int currentWave;
+        public int CurrentWave => currentWave;
+
+        [SerializeField] private int totalWaves;
+        public int TotalWaves => totalWaves;
 
         private void Awake()
         {
@@ -75,6 +85,33 @@ namespace PVZ3D.Core
         {
             if (value <= 0) return;
             score += value;
+            OnStatsChanged?.Invoke();
+        }
+
+        public void RegisterZombieKilled(int scoreValue)
+        {
+            zombieKills++;
+            if (scoreValue > 0)
+            {
+                score += scoreValue;
+            }
+
+            OnStatsChanged?.Invoke();
+        }
+
+        public void SetWaveProgress(int wave, int total)
+        {
+            int clampedTotal = Mathf.Max(0, total);
+            int clampedWave = Mathf.Clamp(wave, 0, clampedTotal);
+
+            if (currentWave == clampedWave && totalWaves == clampedTotal)
+            {
+                return;
+            }
+
+            currentWave = clampedWave;
+            totalWaves = clampedTotal;
+            OnStatsChanged?.Invoke();
         }
     }
 
