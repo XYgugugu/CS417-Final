@@ -18,7 +18,13 @@ namespace PVZ3D.Core
 
         public void EarnCoin()
         {
-            coins++;
+            EarnCoins(1);
+        }
+
+        public void EarnCoins(int amount)
+        {
+            if (amount <= 0) return;
+            coins += amount;
         }
 
         public bool ExchangeCoin(int amount)
