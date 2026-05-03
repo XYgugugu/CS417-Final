@@ -13,6 +13,31 @@ namespace PVZ3D.NPC
         private void Awake()
         {
             numSpawned = 0;
+
+            if (player == null)
+            {
+                GameObject xrPlayer = GameObject.Find("XR-Player");
+                if (xrPlayer != null)
+                {
+                    player = xrPlayer.transform;
+                }
+            }
+
+            if (player == null)
+            {
+                GameObject taggedPlayer = GameObject.FindGameObjectWithTag("Player");
+                if (taggedPlayer != null)
+                {
+                    player = taggedPlayer.transform;
+                }
+            }
+
+            if (player == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             prefab = Resources.Load<GameObject>("Trotter");
 
             if (prefab == null)

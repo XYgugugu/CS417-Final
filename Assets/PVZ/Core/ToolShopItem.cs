@@ -9,8 +9,9 @@ namespace PVZ3D.Core
     {
         public enum ToolType
         {
-            Shovel,
-            Replicator
+            Trotter,
+            Replicator,
+            Shovel
         }
 
         [Header("Game Manager")]
