@@ -51,7 +51,7 @@ namespace PVZ3D.NPC
                 numSpawned += 1;
                 if (numSpawned == maxSpawn)
                 {
-                    Destroy(this);
+                    Destroy(gameObject);
                 }
             }
         }

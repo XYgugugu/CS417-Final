@@ -20,15 +20,11 @@ namespace PVZ3D.NPC
         public float faceTurnSpeed = 8f;
 
         [Header("Coin Chase")]
-        private GameObject coinPrefab;
         public float coinSearchRadius = 999f;
         public float consumeDistance = 0.75f;
         public int maxConsume = 10;
 
-        [Header("Loot")]
         public int consumedCount = 0;
-        public int storedValue = 0;
-        public float dropHeight = 0.05f;
 
         [Header("Idle")]
         public float minIdleDistance = 3f;
@@ -43,6 +39,7 @@ namespace PVZ3D.NPC
         private float repathTimer;
         private float normalMoveSpeed;
         private float idleAngle;
+        private Vector3 idleDestination;
 
         private int followIndex = 0;
         private int totalFollowers = 1;
@@ -58,13 +55,11 @@ namespace PVZ3D.NPC
         private void Awake()
         {
             ApplyRandomBodyTexture();
-            coinPrefab = Resources.Load<GameObject>("Coin");
-            if (coinPrefab == null)
-                Debug.LogError("Trotter: Could not load Coin.prefab from Resources.");
 
             agent = GetComponent<NavMeshAgent>();
             normalMoveSpeed = agent.speed;
             idleAngle = Random.Range(0f, Mathf.PI * 2f);
+            idleDestination = transform.position;
         }
 
         private void OnEnable()
@@ -96,8 +91,7 @@ namespace PVZ3D.NPC
         {
             if (consumedCount >= maxConsume)
             {
-                ReleaseCurrentCoin();
-                IdleAroundPlayer();
+                Despawn();
                 return;
             }
 
@@ -139,7 +133,11 @@ namespace PVZ3D.NPC
         private void IdleAroundPlayer()
         {
             agent.speed = idleMoveSpeed;
-            agent.SetDestination(GetIdlePosition());
+
+            if (!agent.hasPath || agent.remainingDistance <= agent.stoppingDistance + 0.25f)
+            {
+                agent.SetDestination(GetIdlePosition());
+            }
         }
 
         private Coin FindBestAvailableCoin()
@@ -152,7 +150,7 @@ namespace PVZ3D.NPC
 
             foreach (Coin coin in coins)
             {
-                if (coin == null || coin.isClaimed) continue;
+                if (coin == null || coin.IsCollected || coin.isClaimed) continue;
 
                 float sqrDist = (coin.transform.position - transform.position).sqrMagnitude;
                 if (sqrDist > maxSqrDist || sqrDist >= bestSqrDist) continue;
@@ -180,12 +178,14 @@ namespace PVZ3D.NPC
             }
 
             currentTargetCoin = null;
+            ResetAgentPath();
         }
 
         private bool IsCoinStillValid(Coin coin)
         {
             return coin != null
                 && coin.gameObject.activeInHierarchy
+                && !coin.IsCollected
                 && coin.claimedByTrotter == this;
         }
 
@@ -193,13 +193,19 @@ namespace PVZ3D.NPC
         {
             if (!IsCoinStillValid(currentTargetCoin)) return;
 
-            storedValue += currentTargetCoin.value;
-            consumedCount++;
-
             Coin coinToDestroy = currentTargetCoin;
             currentTargetCoin = null;
+            ResetAgentPath();
 
-            Destroy(coinToDestroy.gameObject);
+            if (coinToDestroy.Collect())
+            {
+                consumedCount++;
+            }
+
+            if (consumedCount >= maxConsume)
+            {
+                Despawn();
+            }
         }
 
         private Vector3 GetIdlePosition()
@@ -208,18 +214,18 @@ namespace PVZ3D.NPC
             playerPos.y = transform.position.y;
 
             float radius = Mathf.Max(minIdleDistance, baseFollowDistance + spacing * totalFollowers);
-            idleAngle += repathInterval;
+            idleAngle = Random.Range(0f, Mathf.PI * 2f);
 
-            Vector3 desired = playerPos + new Vector3(
+            idleDestination = playerPos + new Vector3(
                 Mathf.Cos(idleAngle) * radius,
                 0f,
                 Mathf.Sin(idleAngle) * radius
             );
 
-            if (NavMesh.SamplePosition(desired, out NavMeshHit hit, slotSampleRadius, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(idleDestination, out NavMeshHit hit, slotSampleRadius, NavMesh.AllAreas))
                 return hit.position;
 
-            return desired;
+            return idleDestination;
         }
 
         private void FaceMoveDirection()
@@ -242,20 +248,15 @@ namespace PVZ3D.NPC
         {
             ReleaseCurrentCoin();
 
-            if (coinPrefab != null && storedValue > 0)
-            {
-                GameObject spawnedCoinObj = Instantiate(
-                    coinPrefab,
-                    transform.position + Vector3.up * dropHeight,
-                    Quaternion.identity
-                );
-
-                Coin spawnedCoin = spawnedCoinObj.GetComponent<Coin>();
-                if (spawnedCoin != null)
-                    spawnedCoin.value = storedValue;
-            }
-
             Destroy(gameObject);
+        }
+
+        private void ResetAgentPath()
+        {
+            if (agent != null && agent.enabled && agent.isOnNavMesh)
+            {
+                agent.ResetPath();
+            }
         }
 
         private void ApplyRandomBodyTexture()

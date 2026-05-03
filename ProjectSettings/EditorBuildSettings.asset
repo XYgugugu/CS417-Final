@@ -21,7 +21,8 @@ EditorBuildSettings:
     path: Assets/PVZ/Levels/Entry.unity
     guid: bc6d3e0bc2dba0547aa35bc8d9e16d5c
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: cac46780fe3dca9428377286fa964795, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 841ffd19d09c865429bb076ab2b7f924, type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: ad7d688f24946974aa90a1d16f7ea89c, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 8833689779e0c234eb8d2d8d9cf68d3f, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 27bb85713126b984bbf69b42ad73cf87, type: 2}
   m_UseUCBPForAssetBundles: 0
