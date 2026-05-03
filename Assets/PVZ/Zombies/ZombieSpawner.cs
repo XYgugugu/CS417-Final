@@ -91,6 +91,14 @@ namespace PVZ3D.Zombies
             );
         }
 
+        public void SpawnZombies(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                SpawnZombie();
+            }
+        }
+
         private GameManager ResolveGameManager()
         {
             if (gameManager == null)
