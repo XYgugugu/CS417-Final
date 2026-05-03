@@ -21,7 +21,7 @@ namespace PVZ3D.Core
             coins++;
         }
 
-        private bool ExchangeCoin(int amount)
+        public bool ExchangeCoin(int amount)
         {
             int coinsAfterTrade = coins - amount;
             if (coinsAfterTrade < 0)
