@@ -13,6 +13,8 @@ namespace PVZ3D.Core
         [Header("Plant")]
         [SerializeField] private PlantType plantType;
 
+        public PlantType ShopPlantType => plantType;
+
         [Header("Prefab To Spawn")]
         [SerializeField] private GameObject plantPrefab;
 

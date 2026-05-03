@@ -1,4 +1,6 @@
 using PVZ3D.Core;
+using PVZ3D.Zombies;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
@@ -86,8 +88,46 @@ public class SecretEvent : MonoBehaviour
             return;
         }
 
-        Debug.Log("Secret Event: GameManager found, but no safe public plant/inventory API exists in the current project.");
-        Debug.Log("Secret Event: Keep this placeholder until a teammate exposes a PlantManager or inventory method for direct plant reward.");
+        PlantType[] shopPlantTypes = ResolvePurchasablePlantTypes();
+        if (shopPlantTypes.Length == 0)
+        {
+            Debug.Log("Secret Event: No purchasable PlantShopItem found and no safe fallback plant list available.");
+            return;
+        }
+
+        int totalSun = 0;
+        var pickedTypes = new List<PlantType>();
+
+        for (int i = 0; i < count; i++)
+        {
+            PlantType chosen = shopPlantTypes[Random.Range(0, shopPlantTypes.Length)];
+            pickedTypes.Add(chosen);
+            totalSun += gm.PlantsEconomy.GetPlantCost(chosen);
+        }
+
+        gm.PlantsEconomy.CollectSun(totalSun);
+        Debug.Log($"Secret Event: Granted {totalSun} Sun for random shop plant purchase power: {string.Join(", ", pickedTypes)}.");
+    }
+
+    private PlantType[] ResolvePurchasablePlantTypes()
+    {
+        PlantShopItem[] shopItems = FindObjectsOfType<PlantShopItem>();
+        var types = new List<PlantType>();
+
+        foreach (PlantShopItem item in shopItems)
+        {
+            if (!types.Contains(item.ShopPlantType))
+            {
+                types.Add(item.ShopPlantType);
+            }
+        }
+
+        if (types.Count > 0)
+        {
+            return types.ToArray();
+        }
+
+        return new PlantType[0];
     }
 
     private void InstantWin()
@@ -109,16 +149,30 @@ public class SecretEvent : MonoBehaviour
     {
         Debug.Log($"Secret Event: Spawn {count} new zombie(s).");
 
-        Debug.Log("Secret Event: No public zombie-spawn API detected in current ZombieSpawner implementation.");
-        Debug.Log("Secret Event: Keep this placeholder until the team exposes a public spawn method on the zombie spawner.");
+        ZombieSpawner spawner = FindObjectOfType<ZombieSpawner>();
+        if (spawner != null)
+        {
+            spawner.SpawnZombies(count);
+            Debug.Log("Secret Event: Connected to existing ZombieSpawner.SpawnZombies().");
+            return;
+        }
+
+        Debug.Log("Secret Event: No ZombieSpawner found. Spawn new zombies remains a placeholder.");
     }
 
     private void SpawnRandomZombies(int count)
     {
         Debug.Log($"Secret Event: Spawn {count} random zombie(s).");
 
-        Debug.Log("Secret Event: No public zombie-spawn API detected in current ZombieSpawner implementation.");
-        Debug.Log("Secret Event: Keep this placeholder until the team exposes a public spawn method on the zombie spawner.");
+        ZombieSpawner spawner = FindObjectOfType<ZombieSpawner>();
+        if (spawner != null)
+        {
+            spawner.SpawnZombies(count);
+            Debug.Log("Secret Event: Connected to existing ZombieSpawner.SpawnZombies().");
+            return;
+        }
+
+        Debug.Log("Secret Event: No ZombieSpawner found. Spawn random zombies remains a placeholder.");
     }
 
     private void RestartOrLose()
