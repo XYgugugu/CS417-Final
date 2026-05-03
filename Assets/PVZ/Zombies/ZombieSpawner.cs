@@ -8,7 +8,7 @@ namespace PVZ3D.Zombies
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private GameObject firstZombie;
-        [SerializeField] private GameObject[] zombiePrefabs; 
+        [SerializeField] private GameObject[] zombiePrefabs;
         [SerializeField] public Transform[] spawnPoints;
         [SerializeField] private float spawnInterval = 5f;
         [SerializeField] private int totalWaves = 3;
@@ -18,6 +18,15 @@ namespace PVZ3D.Zombies
         [SerializeField] private float spawnYOffset = 0.1f;
         private bool isFirstZombie = true;
 
+        // UI hook events. UI listeners (tutorial popups, scoreboard, etc.) can
+        // subscribe without depending on this class's internals. Static so
+        // listeners don't need a scene reference.
+        public static event System.Action OnSpawnerStarted;
+        public static event System.Action<int, int> OnWaveStarted;   // (wave 1..totalWaves, totalWaves)
+        public static event System.Action OnAllWavesFinished;
+
+        public int TotalWaves => totalWaves;
+
         void Start()
         {
             ResolveGameManager()?.SetWaveProgress(0, totalWaves);
@@ -26,6 +35,7 @@ namespace PVZ3D.Zombies
 
         private IEnumerator SpawnWaves()
         {
+            OnSpawnerStarted?.Invoke();
             yield return new WaitForSeconds(8f);
 
             for (int wave = 1; wave <= totalWaves; wave++)
@@ -39,6 +49,7 @@ namespace PVZ3D.Zombies
 
                 ResolveGameManager()?.SetWaveProgress(wave, totalWaves);
                 Debug.Log("Wave " + wave + " starting!");
+                OnWaveStarted?.Invoke(wave, totalWaves);
 
                 for (int i = 0; i < zombiesPerWave; i++)
                 {
@@ -50,6 +61,7 @@ namespace PVZ3D.Zombies
             }
 
             Debug.Log("All waves finished!");
+            OnAllWavesFinished?.Invoke();
         }
 
         private void SpawnZombie()
