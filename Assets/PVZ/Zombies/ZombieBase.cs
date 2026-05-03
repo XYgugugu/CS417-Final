@@ -21,6 +21,10 @@ namespace PVZ3D.Zombies
         [Header("Loot Drop")]
         [SerializeField] private GameObject coinPrefab;
         [SerializeField] private int coinDropAmount = 1;
+        [SerializeField] private int scoreValue = 10;
+
+        [Header("Game Stats")]
+        [SerializeField] private GameManager gameManager;
 
         [Header("Attack Juice")]
         [SerializeField] private float attackDistance = 0.08f;
@@ -38,6 +42,7 @@ namespace PVZ3D.Zombies
         private PathFollow movement;
         private PlantBase targetPlant;
         private float dropOffsetY = 0.3f;
+        private bool isDead;
 
         public float AttackDamage => attackDamage;
 
@@ -55,6 +60,8 @@ namespace PVZ3D.Zombies
 
         void Update()
         {
+            if (isDead) return;
+
             HandleWalkAudio();
             ZombieAttack();
         }
@@ -185,6 +192,8 @@ namespace PVZ3D.Zombies
 
         public void TakeDamage(float damage)
         {
+            if (isDead) return;
+
             if (hasShield && currentShieldHealth > 0)
             {
                 if (currentShieldHealth - damage <= 0)
@@ -194,6 +203,10 @@ namespace PVZ3D.Zombies
                     hasShield = false;
                     currentHealth -= carryOverDamage;
                     // ReplaceWithBaseZombie(carryOverDamage);
+                    if (currentHealth <= 0)
+                    {
+                        Die();
+                    }
                     return;
                 }
 
@@ -231,19 +244,35 @@ namespace PVZ3D.Zombies
 
         private void Die()
         {
+            if (isDead) return;
+            isDead = true;
+
             Debug.Log("Zombie died");
+
+            ResolveGameManager()?.RegisterZombieKilled(scoreValue);
             
             DropLoot();
 
             if (deathAudio != null)
             {
                 deathAudio.transform.parent = null;
-                walkAudio.volume = 0.4f;
+                deathAudio.volume = 0.4f;
                 deathAudio.Play();
-                Destroy(deathAudio.gameObject, deathAudio.clip.length);
+                float destroyDelay = deathAudio.clip != null ? deathAudio.clip.length : 1f;
+                Destroy(deathAudio.gameObject, destroyDelay);
             }
 
             Destroy(gameObject);
+        }
+
+        private GameManager ResolveGameManager()
+        {
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            return gameManager;
         }
 
         private void DropLoot()
