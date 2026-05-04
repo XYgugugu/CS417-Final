@@ -58,6 +58,15 @@ namespace PVZ3D.Core
         [SerializeField] private float navigationRepeatDelay = 0.28f;
         [SerializeField] private float navigationRepeatInterval = 0.16f;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip inventoryOpenClip;
+        [SerializeField] private AudioClip inventoryCloseClip;
+        [SerializeField] private AudioClip inventoryExpandToggleClip;
+        [SerializeField] private AudioClip collectItemClip;
+        [SerializeField] private AudioClip takeItemOutClip;
+        [SerializeField, Range(0f, 1f)] private float audioVolume = 1f;
+
         [Header("Scanning")]
         [SerializeField] private float scanInterval = 0.75f;
 
@@ -88,6 +97,7 @@ namespace PVZ3D.Core
         private Vector2[] quickSlotBasePositions;
         private Vector2 quickSlotTitleBasePosition;
         private bool hasQuickSlotTitleBasePosition;
+        private bool hasAppliedInitialModalVisibility;
 
         public bool IsOpen => modalVisible;
 
@@ -101,6 +111,11 @@ namespace PVZ3D.Core
 
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+            }
 
             int actualQuickSlotCount = quickSlotViews != null && quickSlotViews.Length > 0
                 ? quickSlotViews.Length
@@ -164,6 +179,7 @@ namespace PVZ3D.Core
             if (modalVisible && expandInventoryAction != null && expandInventoryAction.WasPressedThisFrame())
             {
                 expandedVisible = !expandedVisible;
+                PlayInventorySound(inventoryExpandToggleClip);
                 RefreshModal();
             }
 
@@ -222,6 +238,7 @@ namespace PVZ3D.Core
             AssignQuickSlotOnCollect(record.Id);
             selectedItemId = record.Id;
             StowWorldObject(item);
+            PlayInventorySound(collectItemClip);
             RefreshModal();
 
             return true;
@@ -344,6 +361,7 @@ namespace PVZ3D.Core
 
             collectible.EnsureGrabInteractable();
 
+            PlayInventorySound(takeItemOutClip);
             RefreshModal();
         }
 
@@ -642,6 +660,7 @@ namespace PVZ3D.Core
 
         private void SetModalVisible(bool visible)
         {
+            bool wasVisible = modalVisible;
             modalVisible = visible;
 
             if (!visible)
@@ -661,6 +680,13 @@ namespace PVZ3D.Core
 
             ApplyInventoryInteractionMode(visible);
             RefreshModal();
+
+            if (hasAppliedInitialModalVisibility && wasVisible != visible)
+            {
+                PlayInventorySound(visible ? inventoryOpenClip : inventoryCloseClip);
+            }
+
+            hasAppliedInitialModalVisibility = true;
         }
 
         private void CreateInputActions()
@@ -710,6 +736,25 @@ namespace PVZ3D.Core
                 placeSelectedInQuickSlotAction.AddBinding("<Keyboard>/q");
                 placeSelectedInQuickSlotAction.AddBinding("<XRController>{RightHand}/secondaryButton");
             }
+        }
+
+        private void PlayInventorySound(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(clip, audioVolume);
+                return;
+            }
+
+            Vector3 soundPosition = mainCamera != null
+                ? mainCamera.transform.position
+                : transform.position;
+            AudioSource.PlayClipAtPoint(clip, soundPosition, audioVolume);
         }
 
         private void HandleInventoryNavigation()
