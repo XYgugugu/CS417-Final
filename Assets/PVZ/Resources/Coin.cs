@@ -9,6 +9,7 @@ namespace PVZ3D.Resource
     {
         [Header("Coin Data")]
         public int value = 1;
+        [SerializeField] private float pickupRadius = 0.45f;
         public bool IsCollected => collected;
 
         [HideInInspector] public bool isClaimed = false;
@@ -19,11 +20,35 @@ namespace PVZ3D.Resource
 
         private void Awake()
         {
-            Collider pickupCollider = GetComponent<Collider>();
-            if (pickupCollider != null)
+            EnsurePickupSetup();
+        }
+
+        private void EnsurePickupSetup()
+        {
+            SphereCollider pickupCollider = null;
+            Collider[] colliders = GetComponentsInChildren<Collider>(true);
+            for (int i = 0; i < colliders.Length; i++)
             {
-                pickupCollider.isTrigger = true;
+                if (colliders[i] == null)
+                {
+                    continue;
+                }
+
+                colliders[i].isTrigger = true;
+
+                if (colliders[i].gameObject == gameObject && colliders[i] is SphereCollider sphereCollider)
+                {
+                    pickupCollider = sphereCollider;
+                }
             }
+
+            if (pickupCollider == null)
+            {
+                pickupCollider = gameObject.AddComponent<SphereCollider>();
+            }
+
+            pickupCollider.radius = pickupRadius;
+            pickupCollider.isTrigger = true;
 
             Rigidbody body = GetComponent<Rigidbody>();
             if (body == null)
