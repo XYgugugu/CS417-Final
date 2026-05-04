@@ -2362,6 +2362,7 @@ GameObject:
   - component: {fileID: 8025788369648407951}
   - component: {fileID: 445844355030627495}
   - component: {fileID: -1354472267252909389}
+  - component: {fileID: 7106787722035857687}
   m_Layer: 0
   m_Name: BaseZombie
   m_TagString: Zombie
@@ -2468,11 +2469,34 @@ MonoBehaviour:
   attackInterval: 1
   coinPrefab: {fileID: 0}
   coinDropAmount: 1
+  scoreValue: 10
+  gameManager: {fileID: 0}
   attackDistance: 0.08
   attackSpeed: 8
   walkAudio: {fileID: 0}
   attackAudio: {fileID: 0}
   deathAudio: {fileID: 0}
+--- !u!114 &7106787722035857687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249917948885985318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4920bc190666bb848bb5b34e161b060a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Zombies.ZombieDeathSplitEffect
+  basicZLower: {fileID: 4739064786691610087, guid: c766930a18507a74880294379746b4f4, type: 3}
+  basicZUpper: {fileID: 3343399909169950017, guid: 7d89dbffd2436554aaca4d3a9f96a699, type: 3}
+  lowerOffset: {x: 0, y: 0, z: 0}
+  upperOffset: {x: 0, y: 1.2, z: 0}
+  minUpperUpForce: 3
+  maxUpperUpForce: 6
+  randomSideForce: 1
+  randomSpinForce: 5
+  disappearTime: 3.05
 --- !u!1 &7313004036982936729
 GameObject:
   m_ObjectHideFlags: 0
