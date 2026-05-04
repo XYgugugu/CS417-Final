@@ -524,6 +524,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1923769988135054068, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: hudCanvasToHide
+      value: 
+      objectReference: {fileID: 1854198481}
     - target: {fileID: 2355839499896484591, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.12487
@@ -563,6 +567,30 @@ PrefabInstance:
     - target: {fileID: 2355839499896484591, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680552644364598824, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 278802396}
+    - target: {fileID: 2680552644364598824, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680552644364598824, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: m_PlaneDistance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3041058229755480522, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.183
+      objectReference: {fileID: 0}
+    - target: {fileID: 3082600589155121340, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3082600589155121340, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3521688016852867559, guid: 07edfceeefd397143b484034dbf0958f, type: 3}
       propertyPath: m_Name
@@ -983,6 +1011,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b09425b2548ffd741871028d29091198, type: 3}
+--- !u!20 &278802396 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7695777549964510636, guid: b09425b2548ffd741871028d29091198, type: 3}
+  m_PrefabInstance: {fileID: 278802395}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &283884947
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1796,6 +1829,7 @@ MonoBehaviour:
     coins: 0
   gameOver: 0
   didWin: 0
+  levelCleared: 0
   score: 0
   zombieKills: 0
   currentWave: 0
@@ -3175,6 +3209,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelTransition
   fadeImage: {fileID: 1232842784}
   fadeDuration: 1
+  playFadeHaptics: 1
+  hapticAmplitude: 0.25
+  hapticDuration: 0.15
 --- !u!114 &1232842784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5190,6 +5227,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4693366239567937022, guid: 3e859b8a21c85884781ebb8604b41a01, type: 3}
   m_PrefabInstance: {fileID: 1819458308}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &1854198481 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 113239795803042535, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+  m_PrefabInstance: {fileID: 821440597}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1868761010 stripped
 Transform:
