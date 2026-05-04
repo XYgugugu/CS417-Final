@@ -262,6 +262,9 @@ namespace PVZ3D.Zombies
                 Destroy(deathAudio.gameObject, destroyDelay);
             }
 
+            // TODO: change to slice prefab using this.transform
+            // Instantiate(prefab = BaseZombieSlice, transform = this.transform)
+
             Destroy(gameObject);
         }
 

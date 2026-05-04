@@ -14,9 +14,14 @@ namespace PVZ3D.Zombies
 
         [SerializeField] private float disappearTime = 3f;
 
-        private void OnDestroy()
+        // private void OnDestroy()
+        // {
+        //     PlayDeathSplit();
+        // }
+        private void Awake()
         {
-            PlayDeathSplit();
+            PlayDeathSplit()
+            Destory(gameObject);
         }
 
         private void PlayDeathSplit()
