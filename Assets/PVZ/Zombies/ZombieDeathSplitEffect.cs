@@ -20,12 +20,14 @@ namespace PVZ3D.Zombies
         // }
         private void Awake()
         {
-            PlayDeathSplit()
-            Destory(gameObject);
+            PlayDeathSplit();
+            Destroy(gameObject);
         }
 
         private void PlayDeathSplit()
         {
+            if (basicZLower == null || basicZUpper == null) return;
+
             GameObject lower = Instantiate(
                 basicZLower,
                 transform.position,
@@ -51,7 +53,7 @@ namespace PVZ3D.Zombies
             upperRb.AddForce(force, ForceMode.Impulse);
             upperRb.AddTorque(Random.insideUnitSphere * randomSpinForce, ForceMode.Impulse);
 
-            Destroy(lower);
+            Destroy(lower, disappearTime);
             Destroy(upper, disappearTime);
         }
     }
