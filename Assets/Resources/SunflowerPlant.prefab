@@ -44,14 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a3e384d1184c7dbc29c9590359a246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  hurtboxCenter: {x: 0, y: 0.45, z: 0}
-  hurtboxSize: {x: 0.8, y: 0.9, z: 0.8}
-  isPlaced: 0
   sunInterval: 8
   sunSpawnOffset: {x: 0, y: 1.25, z: 0}
   normalSunValue: 25
-  upgradedSunValue: 50
-  upgradedVisualScale: 1.16
-  producesLargeSun: 0

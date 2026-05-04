@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace PVZ3D.Core
+namespace PVZ3D.Inventory
 {
     public class InventoryItemIconUI : MonoBehaviour,
         IPointerClickHandler,
@@ -18,7 +18,6 @@ namespace PVZ3D.Core
         [SerializeField] private Outline fallbackSelectionOutline;
 
         private RectTransform rectTransform;
-        private Transform originalParent;
         private Canvas rootCanvas;
         private RectTransform dragRoot;
 
@@ -98,7 +97,6 @@ namespace PVZ3D.Core
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            originalParent = transform.parent;
             droppedOnSlot = false;
 
             if (rootCanvas == null)

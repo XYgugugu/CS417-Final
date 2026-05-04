@@ -44,17 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6687e2ddee4799b88f1282b6b6c8cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  hurtboxCenter: {x: 0, y: 0.45, z: 0}
-  hurtboxSize: {x: 0.8, y: 0.9, z: 0.8}
-  isPlaced: 0
-  feedbackStartColor: {r: 0.42, g: 0.8, b: 0.25, a: 1}
-  feedbackEndColor: {r: 0.55, g: 0.38, b: 0.16, a: 0.7}
   fireInterval: 2
   muzzleOffset: {x: 0.45, y: 0.65, z: 0}
   projectileDamage: 10
   projectileSpeed: 3
-  repeaterFireInterval: 0.5
-  upgradedVisualScale: 1.18
-  isRepeater: 0

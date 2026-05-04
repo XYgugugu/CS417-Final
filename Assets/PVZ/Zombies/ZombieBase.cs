@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using PVZ3D.Core;
-using PVZ3D.Region;
 using PVZ3D.Plants;
 
 namespace PVZ3D.Zombies
@@ -12,7 +11,6 @@ namespace PVZ3D.Zombies
         [SerializeField] private float baseHealth = 100f;
         [SerializeField] private float shieldHealth = 0f;
         [SerializeField] private bool hasShield = false;
-        // [SerializeField] private GameObject replacementZombie;
 
         [Header("Attack")]
         [SerializeField] private float attackDamage = 10f;
@@ -38,13 +36,14 @@ namespace PVZ3D.Zombies
         [SerializeField] private AudioSource attackAudio;
         [SerializeField] private AudioSource deathAudio;
 
+        private const float DropOffsetY = 0.3f;
+
         private float currentHealth;
         private float currentShieldHealth;
-        private float attackTimer = 0f;
-        private bool isAttacking = false;
+        private float attackTimer;
+        private bool isAttacking;
         private PathFollow movement;
         private PlantBase targetPlant;
-        private float dropOffsetY = 0.3f;
         private bool isDead;
 
         public float AttackDamage => attackDamage;
@@ -52,46 +51,39 @@ namespace PVZ3D.Zombies
         private void Awake()
         {
             EnsureRuntimeSetup();
-        }
-
-        void Start()
-        {
             currentHealth = baseHealth;
             currentShieldHealth = shieldHealth;
             movement = GetComponent<PathFollow>();
         }
 
-        void Update()
+        private void Update()
         {
             if (isDead) return;
 
             HandleWalkAudio();
-            ZombieAttack();
+            AttackPlant();
         }
 
         private void HandleWalkAudio()
         {
             if (movement == null || walkAudio == null) return;
 
-            if (!movement.IsStopped() && !walkAudio.isPlaying)
+            if (!movement.IsStopped && !walkAudio.isPlaying)
             {
                 walkAudio.volume = 0.3f;
                 walkAudio.Play();
             }
-            else if (movement.IsStopped() && walkAudio.isPlaying)
+            else if (movement.IsStopped && walkAudio.isPlaying)
             {
                 walkAudio.Stop();
             }
         }
 
-        private void ZombieAttack()
-        {   
-             if (targetPlant == null)
+        private void AttackPlant()
+        {
+            if (targetPlant == null)
             {
-                if (movement != null)
-                {
-                    movement.ResumeMoving();
-                }
+                movement?.ResumeMoving();
                 return;
             }
 
@@ -195,27 +187,17 @@ namespace PVZ3D.Zombies
 
         public void TakeDamage(float damage)
         {
-            if (isDead) return;
+            if (isDead || damage <= 0f) return;
 
             if (hasShield && currentShieldHealth > 0)
             {
-                if (currentShieldHealth - damage <= 0)
-                {
-                    float carryOverDamage = damage - currentShieldHealth;
-                    currentShieldHealth = 0f;
-                    hasShield = false;
-                    currentHealth -= carryOverDamage;
-                    // ReplaceWithBaseZombie(carryOverDamage);
-                    if (currentHealth <= 0)
-                    {
-                        Die();
-                    }
-                    return;
-                }
-
-                currentShieldHealth -= damage;
-                return;
+                float absorbedDamage = Mathf.Min(currentShieldHealth, damage);
+                currentShieldHealth -= absorbedDamage;
+                damage -= absorbedDamage;
+                hasShield = currentShieldHealth > 0f;
             }
+
+            if (damage <= 0f) return;
 
             currentHealth -= damage;
             if (currentHealth <= 0)
@@ -224,26 +206,10 @@ namespace PVZ3D.Zombies
             }
         }
 
-        // private void ReplaceWithBaseZombie(float carryOverDamage)
-        // {
-        //     // Destory original zombie and replace with office worker zombie
-        //     Vector3 currentPosition = transform.position;
-
-        //     GameObject newZombie = Instantiate(
-        //         replacementZombie,
-        //         currentPosition,
-        //         Quaternion.identity
-        //     );
-
-        //     ZombieBase newZombieBase = newZombie.GetComponent<ZombieBase>();
-
-        //     if (newZombieBase != null && carryOverDamage > 0)
-        //     {
-        //         newZombieBase.TakeDamage(carryOverDamage);
-        //     }
-
-        //     Destroy(gameObject);
-        // }
+        public void Kill()
+        {
+            Die();
+        }
 
         private void Die()
         {
@@ -291,7 +257,7 @@ namespace PVZ3D.Zombies
             {
                 Vector3 randomOffset = new Vector3(
                     Random.Range(-0.3f, 0.3f),
-                    dropOffsetY,
+                    DropOffsetY,
                     Random.Range(-0.3f, 0.3f)
                 );
 

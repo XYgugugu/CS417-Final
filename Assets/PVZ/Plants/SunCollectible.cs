@@ -14,8 +14,6 @@ namespace PVZ3D.Plants
         [SerializeField] private float bounceForce = 1.2f;
         [SerializeField] private float groundedNormalThreshold = 0.65f;
 
-        public int Value => value;
-
         private float spawnTime;
         private Renderer[] renderers;
         private Color[] originalColors;
@@ -91,15 +89,6 @@ namespace PVZ3D.Plants
 
         private void EnsurePrefabSetup()
         {
-            if (GetComponentInChildren<Renderer>(true) == null)
-            {
-                CreateSunVisualPart("Sun Core", Vector3.zero, Vector3.one * 0.32f * PlantVisualUtility.PrefabScale, PrimitiveType.Sphere, new Color(1f, 0.86f, 0.1f));
-                CreateSunVisualPart("Sun Ray", new Vector3(0.34f, 0f, 0f) * PlantVisualUtility.PrefabScale, new Vector3(0.18f, 0.04f, 0.04f) * PlantVisualUtility.PrefabScale, PrimitiveType.Cube, new Color(1f, 0.72f, 0.08f));
-                CreateSunVisualPart("Sun Ray", new Vector3(-0.34f, 0f, 0f) * PlantVisualUtility.PrefabScale, new Vector3(0.18f, 0.04f, 0.04f) * PlantVisualUtility.PrefabScale, PrimitiveType.Cube, new Color(1f, 0.72f, 0.08f));
-                CreateSunVisualPart("Sun Ray", new Vector3(0f, 0.34f, 0f) * PlantVisualUtility.PrefabScale, new Vector3(0.04f, 0.18f, 0.04f) * PlantVisualUtility.PrefabScale, PrimitiveType.Cube, new Color(1f, 0.72f, 0.08f));
-                CreateSunVisualPart("Sun Ray", new Vector3(0f, -0.34f, 0f) * PlantVisualUtility.PrefabScale, new Vector3(0.04f, 0.18f, 0.04f) * PlantVisualUtility.PrefabScale, PrimitiveType.Cube, new Color(1f, 0.72f, 0.08f));
-            }
-
             SphereCollider triggerCollider = null;
             physicsCollider = null;
             SphereCollider[] sphereColliders = GetComponents<SphereCollider>();
@@ -243,7 +232,7 @@ namespace PVZ3D.Plants
             Destroy(gameObject, 0.35f);
         }
 
-        public void PlayCollectedFeedback()
+        private void PlayCollectedFeedback()
         {
             PlantVisualUtility.CreateParticleBurst(
                 transform.position,
@@ -308,27 +297,6 @@ namespace PVZ3D.Plants
 
             Transform root = other.transform.root;
             return root != null && root.CompareTag("Player");
-        }
-
-        private void CreateSunVisualPart(string partName, Vector3 localPosition, Vector3 localScale, PrimitiveType primitive, Color color)
-        {
-            GameObject part = GameObject.CreatePrimitive(primitive);
-            part.name = partName;
-            part.transform.SetParent(transform, false);
-            part.transform.localPosition = localPosition;
-            part.transform.localScale = localScale;
-
-            Renderer renderer = part.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.material.color = color;
-            }
-
-            Collider collider = part.GetComponent<Collider>();
-            if (collider != null)
-            {
-                Destroy(collider);
-            }
         }
 
         private void ApplySpawnImpulse()

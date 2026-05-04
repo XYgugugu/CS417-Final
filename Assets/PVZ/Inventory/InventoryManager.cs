@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-namespace PVZ3D.Core
+namespace PVZ3D.Inventory
 {
     public class InventoryManager : MonoBehaviour
     {
@@ -217,7 +217,7 @@ namespace PVZ3D.Core
                 return true;
             }
 
-            Vector2Int itemSize = GetInventorySize(item);
+            Vector2Int itemSize = Vector2Int.one;
 
             if (!TryFindFreePosition(itemSize, out Vector2Int position))
             {
@@ -1348,11 +1348,6 @@ namespace PVZ3D.Core
             }
 
             return string.IsNullOrWhiteSpace(displayName) ? "Item" : displayName;
-        }
-
-        private static Vector2Int GetInventorySize(GameObject item)
-        {
-            return Vector2Int.one;
         }
 
         private static bool IsToolCandidate(GameObject item)

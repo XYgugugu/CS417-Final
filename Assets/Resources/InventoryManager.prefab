@@ -87,7 +87,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 7
   gridPosition: {x: 0, y: 0}
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 11
   gridPosition: {x: 0, y: 0}
@@ -352,7 +352,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4b48823be91745a4880604d6adb61704, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventoryManager
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventoryManager
   columns: 6
   rows: 2
   quickSlotCount: 3
@@ -485,7 +485,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 1
   index: 0
   gridPosition: {x: 0, y: 0}
@@ -580,7 +580,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 4
   gridPosition: {x: 0, y: 0}
@@ -710,7 +710,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 3
   gridPosition: {x: 0, y: 0}
@@ -805,7 +805,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 2
   gridPosition: {x: 0, y: 0}
@@ -900,7 +900,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 9
   gridPosition: {x: 0, y: 0}
@@ -995,7 +995,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 6
   gridPosition: {x: 0, y: 0}
@@ -1378,7 +1378,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 0
   gridPosition: {x: 0, y: 0}
@@ -1473,7 +1473,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 5
   gridPosition: {x: 0, y: 0}
@@ -1568,7 +1568,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 1
   gridPosition: {x: 0, y: 0}
@@ -1663,7 +1663,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 8
   gridPosition: {x: 0, y: 0}
@@ -1758,7 +1758,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 10
   gridPosition: {x: 0, y: 0}
@@ -1853,7 +1853,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 0
   index: 2
   gridPosition: {x: 0, y: 0}
@@ -2085,7 +2085,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fa75ff8ce975b04e97a584ba28927db, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.InventorySlotUI
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Inventory.InventorySlotUI
   isQuickSlot: 1
   index: 1
   gridPosition: {x: 0, y: 0}

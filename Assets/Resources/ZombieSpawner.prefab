@@ -156,7 +156,7 @@ MonoBehaviour:
   spawnInterval: 5
   totalWaves: 3
   zombiesPerWave: 10
-  WavesInterval: 15
+  wavesInterval: 15
   waveWarningAudio: {fileID: 0}
   spawnYOffset: 0.1
 --- !u!1 &6912776794429509221

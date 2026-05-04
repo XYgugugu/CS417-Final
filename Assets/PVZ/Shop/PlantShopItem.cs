@@ -1,9 +1,10 @@
 using UnityEngine;
 using TMPro;
+using PVZ3D.Core;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-namespace PVZ3D.Core
+namespace PVZ3D.Shop
 {
     public class PlantShopItem : MonoBehaviour
     {
@@ -49,7 +50,7 @@ namespace PVZ3D.Core
 
             if (interactable != null)
             {
-                interactable.selectEntered.AddListener(_ => TryPurchasePlant());
+                interactable.selectEntered.AddListener(OnSelected);
             }
         }
 
@@ -67,8 +68,13 @@ namespace PVZ3D.Core
         {
             if (interactable != null)
             {
-                interactable.selectEntered.RemoveAllListeners();
+                interactable.selectEntered.RemoveListener(OnSelected);
             }
+        }
+
+        private void OnSelected(SelectEnterEventArgs args)
+        {
+            TryPurchasePlant();
         }
 
         public void TryPurchasePlant()
@@ -102,7 +108,7 @@ namespace PVZ3D.Core
                 return null;
             }
 
-            Transform point = GetAvailableSpawnPoint();
+            Transform point = ShopItemUtility.GetAvailableSpawnPoint(spawnPoints, occupiedCheckRadius, occupiedLayer);
 
             if (point == null)
             {
@@ -111,32 +117,6 @@ namespace PVZ3D.Core
             }
 
             return Instantiate(plantPrefab, point.position, point.rotation);
-        }
-
-        private Transform GetAvailableSpawnPoint()
-        {
-            if (spawnPoints == null || spawnPoints.Length == 0)
-            {
-                return null;
-            }
-
-            foreach (Transform point in spawnPoints)
-            {
-                if (point == null) continue;
-
-                bool occupied = Physics.CheckSphere(
-                    point.position,
-                    occupiedCheckRadius,
-                    occupiedLayer
-                );
-
-                if (!occupied)
-                {
-                    return point;
-                }
-            }
-
-            return null;
         }
 
         private void RefreshPriceText()
@@ -158,36 +138,16 @@ namespace PVZ3D.Core
 
         private void PlayShopSound(AudioClip clip)
         {
-            if (clip == null)
-            {
-                return;
-            }
-
-            if (audioSource != null)
-            {
-                audioSource.PlayOneShot(clip, purchaseVolume);
-                return;
-            }
-
-            AudioSource.PlayClipAtPoint(clip, transform.position, purchaseVolume);
+            ShopItemUtility.PlaySound(audioSource, clip, transform.position, purchaseVolume);
         }
 
         private void PlayPurchaseConfetti(GameObject purchasedItem)
         {
-            if (purchaseConfettiPrefab == null || purchasedItem == null)
-            {
-                return;
-            }
-
-            GameObject confetti = Instantiate(
+            ShopItemUtility.PlayPurchaseConfetti(
                 purchaseConfettiPrefab,
-                purchasedItem.transform.position + purchaseConfettiOffset,
-                Quaternion.identity);
-
-            if (purchaseConfettiLifetime > 0f)
-            {
-                Destroy(confetti, purchaseConfettiLifetime);
-            }
+                purchasedItem,
+                purchaseConfettiOffset,
+                purchaseConfettiLifetime);
         }
 
         private void Update()

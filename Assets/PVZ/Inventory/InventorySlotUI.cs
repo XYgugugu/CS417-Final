@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace PVZ3D.Core
+namespace PVZ3D.Inventory
 {
     public class InventorySlotUI : MonoBehaviour,
         IDropHandler,

@@ -51,6 +51,8 @@ namespace PVZ3D.UI
         [SerializeField] private Vector3 xrPanelOffset = new Vector3(0f, -0.15f, 0f);
         [SerializeField] private bool yawOnlyFacing = true;
 
+        private const int AllInteractionLayers = -1;
+
         private XRSimpleInteractable restartXRInteractable;
         private XRSimpleInteractable mainMenuXRInteractable;
         private XRSimpleInteractable quitXRInteractable;
@@ -64,9 +66,10 @@ namespace PVZ3D.UI
         private void OnEnable()
         {
             commandTriggered = false;
-            BindButtons();
             StabilizeCanvasForXR();
             EnsureUIInteraction();
+            Canvas.ForceUpdateCanvases();
+            BindButtons();
 
             // Refresh content the moment the overlay appears.
             Refresh();
@@ -223,6 +226,14 @@ namespace PVZ3D.UI
                 boxCollider = button.gameObject.AddComponent<BoxCollider>();
             }
 
+            button.interactable = true;
+            if (button.targetGraphic != null)
+            {
+                button.targetGraphic.raycastTarget = true;
+            }
+
+            Vector3 colliderCenter = Vector3.zero;
+            Vector3 colliderSize = new Vector3(1f, 1f, 80f);
             RectTransform rectTransform = button.GetComponent<RectTransform>();
             if (rectTransform != null)
             {
@@ -230,11 +241,40 @@ namespace PVZ3D.UI
                 float width = Mathf.Max(1f, rect.width);
                 float height = Mathf.Max(1f, rect.height);
 
-                boxCollider.center = new Vector3(rect.center.x, rect.center.y, 0f);
-                boxCollider.size = new Vector3(width, height, Mathf.Max(20f, Mathf.Min(width, height) * 0.1f));
+                colliderCenter = new Vector3(rect.center.x, rect.center.y, 0f);
+                colliderSize = new Vector3(width, height, Mathf.Max(80f, Mathf.Min(width, height) * 0.35f));
             }
 
+            boxCollider.center = colliderCenter;
+            boxCollider.size = colliderSize;
             boxCollider.isTrigger = false;
+            boxCollider.enabled = true;
+
+            BoxCollider uiLayerCollider = null;
+            int uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer >= 0)
+            {
+                const string hitboxName = "XRHitbox_UI";
+                Transform hitboxTransform = button.transform.Find(hitboxName);
+                if (hitboxTransform == null)
+                {
+                    GameObject hitbox = new GameObject(hitboxName);
+                    hitboxTransform = hitbox.transform;
+                    hitboxTransform.SetParent(button.transform, false);
+                }
+
+                hitboxTransform.gameObject.layer = uiLayer;
+                uiLayerCollider = hitboxTransform.GetComponent<BoxCollider>();
+                if (uiLayerCollider == null)
+                {
+                    uiLayerCollider = hitboxTransform.gameObject.AddComponent<BoxCollider>();
+                }
+
+                uiLayerCollider.center = colliderCenter;
+                uiLayerCollider.size = colliderSize;
+                uiLayerCollider.isTrigger = false;
+                uiLayerCollider.enabled = true;
+            }
 
             XRSimpleInteractable interactable = button.GetComponent<XRSimpleInteractable>();
             if (interactable == null)
@@ -242,9 +282,16 @@ namespace PVZ3D.UI
                 interactable = button.gameObject.AddComponent<XRSimpleInteractable>();
             }
 
+            interactable.enabled = true;
+            interactable.interactionLayers = AllInteractionLayers;
+
             if (!interactable.colliders.Contains(boxCollider))
             {
                 interactable.colliders.Add(boxCollider);
+            }
+            if (uiLayerCollider != null && !interactable.colliders.Contains(uiLayerCollider))
+            {
+                interactable.colliders.Add(uiLayerCollider);
             }
 
             return interactable;

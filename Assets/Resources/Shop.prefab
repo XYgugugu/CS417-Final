@@ -2010,7 +2010,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 052d52ff05049464d965c76f8ce3d6bd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.PlantShopItem
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Shop.PlantShopItem
   gameManager: {fileID: 0}
   plantType: 1
   plantPrefab: {fileID: 100000, guid: 51b7c6cb94494349a401b6972b0a8d4d, type: 3}
@@ -2116,7 +2116,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e99c4ff3e7fe104180a340beac127f5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.ToolShopItem
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Shop.ToolShopItem
   gameManager: {fileID: 0}
   toolType: 1
   coinCost: 5
@@ -2319,7 +2319,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 052d52ff05049464d965c76f8ce3d6bd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.PlantShopItem
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Shop.PlantShopItem
   gameManager: {fileID: 0}
   plantType: 2
   plantPrefab: {fileID: 100000, guid: 2e7431c223024d51bb423d5e50329c07, type: 3}
@@ -2454,7 +2454,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e99c4ff3e7fe104180a340beac127f5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.ToolShopItem
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Shop.ToolShopItem
   gameManager: {fileID: 0}
   toolType: 0
   coinCost: 5
@@ -2763,7 +2763,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 052d52ff05049464d965c76f8ce3d6bd, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Core.PlantShopItem
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Shop.PlantShopItem
   gameManager: {fileID: 0}
   plantType: 0
   plantPrefab: {fileID: 100000, guid: 52f19309c8e344d2a32e044805514974, type: 3}

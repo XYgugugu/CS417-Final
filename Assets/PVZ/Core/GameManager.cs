@@ -1,5 +1,6 @@
 using System;
 using PVZ3D.Plants;
+using PVZ3D.Shop;
 using PVZ3D.Zombies;
 using UnityEngine;
 
