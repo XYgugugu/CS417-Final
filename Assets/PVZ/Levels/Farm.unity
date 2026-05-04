@@ -119,6 +119,73 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &31232708
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 583055976}
+    m_Modifications:
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1422991931943170976, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+      propertyPath: m_Name
+      value: RoutePortal
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+--- !u!4 &31232709 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+  m_PrefabInstance: {fileID: 31232708}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &31232710 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1422991931943170976, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+  m_PrefabInstance: {fileID: 31232708}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &86544884
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -881,13 +948,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 583055976}
+  - component: {fileID: 583055977}
   m_Layer: 0
   m_Name: Portals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &583055976
 Transform:
   m_ObjectHideFlags: 0
@@ -903,8 +971,32 @@ Transform:
   m_Children:
   - {fileID: 1351567471}
   - {fileID: 1937688477}
+  - {fileID: 31232709}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &583055977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 583055975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269835caff7d384459ac6d058d6518d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Levels.RandomizedRoutePortalSet
+  routePortals:
+  - {fileID: 1351567472}
+  - {fileID: 1937688478}
+  - {fileID: 31232710}
+  targetSceneNames:
+  - Night
+  - TownHouse
+  portalLabels: []
+  gameManager: {fileID: 0}
+  hudController: {fileID: 6467102724082564593}
+  gameplayHudRoot: {fileID: 6467102724082564592}
 --- !u!1001 &583773712
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3038,6 +3130,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
   m_PrefabInstance: {fileID: 1351567470}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1351567472 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1422991931943170976, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+  m_PrefabInstance: {fileID: 1351567470}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1424598979 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 864189362781645259, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
@@ -3755,7 +3852,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 1.38
       objectReference: {fileID: 0}
     - target: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3809,6 +3906,11 @@ PrefabInstance:
 --- !u!4 &1937688477 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1215738299931293398, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
+  m_PrefabInstance: {fileID: 1937688476}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1937688478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1422991931943170976, guid: 30c2cdd1fc861aa4cb799d6f9472b406, type: 3}
   m_PrefabInstance: {fileID: 1937688476}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1941190689
@@ -6763,6 +6865,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
+--- !u!1 &6467102724082564592 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1145695024527341338, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+  m_PrefabInstance: {fileID: 6467102724082564587}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6467102724082564593 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3341891793710705038, guid: 42b84df1a8eba4a808e5493af2d42d15, type: 3}
+  m_PrefabInstance: {fileID: 6467102724082564587}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467102724082564589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5e38a967681641e0b41e1343f2fd1ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.UI.HUDController
 --- !u!1001 &7976677765350214271
 PrefabInstance:
   m_ObjectHideFlags: 0

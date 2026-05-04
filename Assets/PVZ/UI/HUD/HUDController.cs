@@ -68,5 +68,26 @@ namespace PVZ3D.UI
                 winLoseRoot.SetActive(isGameOver);
             }
         }
+
+        /// <summary>
+        /// Public method to show the victory/endgame UI overlay.
+        /// Called by route portals or level clear managers to display victory screen.
+        /// </summary>
+        public void ShowVictoryUI()
+        {
+            if (hudRoot != null)
+            {
+                hudRoot.SetActive(false);
+            }
+            if (winLoseRoot != null)
+            {
+                winLoseRoot.SetActive(true);
+                Debug.Log("HUDController: Victory UI shown.");
+            }
+            else
+            {
+                Debug.LogWarning("HUDController: winLoseRoot not assigned.");
+            }
+        }
     }
 }
