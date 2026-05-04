@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Filtering;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 namespace PVZ3D.Plants
 {
@@ -62,6 +64,8 @@ namespace PVZ3D.Plants
 
             grab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
             grab.throwOnDetach = false;
+            grab.selectFilters.Add(new XRSelectFilterDelegate((interactor, interactable) =>
+                interactor.handedness == InteractorHandedness.Right));
         }
 
         public static void EnsurePlantVisual(Transform parent, PlantVisualKind kind)
