@@ -1,4 +1,5 @@
 using PVZ3D.Core;
+using PVZ3D.Shop;
 using PVZ3D.Zombies;
 using System.Collections.Generic;
 using UnityEngine;
