@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using PVZ3D.Core;
 
@@ -20,9 +19,9 @@ namespace PVZ3D.Zombies
 
         private bool hasSpawnedFirstZombie;
 
-        public static event Action OnSpawnerStarted;
-        public static event Action<int, int> OnWaveStarted;
-        public static event Action OnAllWavesFinished;
+        public static event System.Action OnSpawnerStarted;
+        public static event System.Action<int, int> OnWaveStarted;
+        public static event System.Action OnAllWavesFinished;
 
         public int TotalWaves => totalWaves;
 
