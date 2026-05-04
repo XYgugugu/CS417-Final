@@ -1,0 +1,252 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4795641678955742694
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 391369030255298764, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_Name
+      value: Shop Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 864189362781645259, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_Name
+      value: Replicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 2644078269965318439, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 99fab4f77ab980f468c1e994370ce4a8, type: 3}
+    - target: {fileID: 2644078269965318439, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseFailedClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c055fdf91b4ea7e4194f1bc442883254, type: 3}
+    - target: {fileID: 2644078269965318439, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseConfettiPrefab
+      value: 
+      objectReference: {fileID: 4938095755617958529, guid: 2e79f16be10fbd14f8d5ef191f8db4aa, type: 3}
+    - target: {fileID: 2680106603384133787, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 99fab4f77ab980f468c1e994370ce4a8, type: 3}
+    - target: {fileID: 2680106603384133787, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseFailedClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c055fdf91b4ea7e4194f1bc442883254, type: 3}
+    - target: {fileID: 2680106603384133787, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseConfettiPrefab
+      value: 
+      objectReference: {fileID: 4938095755617958529, guid: 2e79f16be10fbd14f8d5ef191f8db4aa, type: 3}
+    - target: {fileID: 2701182785072202912, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_text
+      value: 'Replicator
+
+        5 Coins'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.989
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.793
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.227
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: toolPrefab
+      value: 
+      objectReference: {fileID: 690044030361800333, guid: 5a7278e94504ebd4ebbc20f5d793a333, type: 3}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 99fab4f77ab980f468c1e994370ce4a8, type: 3}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseFailedClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c055fdf91b4ea7e4194f1bc442883254, type: 3}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseConfettiPrefab
+      value: 
+      objectReference: {fileID: 4938095755617958529, guid: 2e79f16be10fbd14f8d5ef191f8db4aa, type: 3}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: spawnPoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: 'spawnPoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 4225229842738889968}
+    - target: {fileID: 4289618868626496410, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 99fab4f77ab980f468c1e994370ce4a8, type: 3}
+    - target: {fileID: 4289618868626496410, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseFailedClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c055fdf91b4ea7e4194f1bc442883254, type: 3}
+    - target: {fileID: 4289618868626496410, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseConfettiPrefab
+      value: 
+      objectReference: {fileID: 4938095755617958529, guid: 2e79f16be10fbd14f8d5ef191f8db4aa, type: 3}
+    - target: {fileID: 7353646571743847406, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 99fab4f77ab980f468c1e994370ce4a8, type: 3}
+    - target: {fileID: 7353646571743847406, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseFailedClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c055fdf91b4ea7e4194f1bc442883254, type: 3}
+    - target: {fileID: 7353646571743847406, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: purchaseConfettiPrefab
+      value: 
+      objectReference: {fileID: 4938095755617958529, guid: 2e79f16be10fbd14f8d5ef191f8db4aa, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 864189362781645259, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2654409963917812593}
+    - targetCorrespondingSourceObject: {fileID: 864189362781645259, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5298554386768235305}
+  m_SourcePrefab: {fileID: 100100000, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+--- !u!4 &4225229842738889968 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8660002710057369878, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+  m_PrefabInstance: {fileID: 4795641678955742694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5292781894838152237 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 864189362781645259, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+  m_PrefabInstance: {fileID: 4795641678955742694}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &2654409963917812593
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5292781894838152237}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.24936613, y: 0.47910798, z: 0.5773476}
+  m_Center: {x: 0.00000048428774, y: 0.040513873, z: 0.08970558}
+--- !u!114 &5298554386768235305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5292781894838152237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a35f6cfbfba9b548aaa00d52cfe8a50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.XR.Interaction.Toolkit::UnityEngine.XR.Interaction.Toolkit.Interactables.XRSimpleInteractable
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 1
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}

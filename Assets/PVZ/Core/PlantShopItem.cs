@@ -26,11 +26,26 @@ namespace PVZ3D.Core
         [Header("Price UI")]
         [SerializeField] private TextMeshProUGUI priceText;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip purchaseClip;
+        [SerializeField] private AudioClip purchaseFailedClip;
+        [SerializeField, Range(0f, 1f)] private float purchaseVolume = 1f;
+
+        [Header("Purchase Effect")]
+        [SerializeField] private GameObject purchaseConfettiPrefab;
+        [SerializeField] private Vector3 purchaseConfettiOffset = new Vector3(0f, 0.5f, 0f);
+        [SerializeField] private float purchaseConfettiLifetime = 3f;
+
         private XRSimpleInteractable interactable;
 
         private void Awake()
         {
             interactable = GetComponent<XRSimpleInteractable>();
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+            }
 
             if (interactable != null)
             {
@@ -69,19 +84,22 @@ namespace PVZ3D.Core
             if (!purchaseSucceeded)
             {
                 Debug.Log("Plant purchase failed: not enough sun or plant is on cooldown.");
+                PlayShopSound(purchaseFailedClip);
                 return;
             }
 
-            SpawnPlant();
+            GameObject spawnedPlant = SpawnPlant();
+            PlayShopSound(purchaseClip);
+            PlayPurchaseConfetti(spawnedPlant);
             RefreshPriceText();
         }
 
-        private void SpawnPlant()
+        private GameObject SpawnPlant()
         {
             if (plantPrefab == null)
             {
                 Debug.LogWarning("PlantShopItem: plantPrefab is not assigned.");
-                return;
+                return null;
             }
 
             Transform point = GetAvailableSpawnPoint();
@@ -89,10 +107,10 @@ namespace PVZ3D.Core
             if (point == null)
             {
                 Debug.LogWarning("PlantShopItem: no empty spawn point found.");
-                return;
+                return null;
             }
 
-            Instantiate(plantPrefab, point.position, point.rotation);
+            return Instantiate(plantPrefab, point.position, point.rotation);
         }
 
         private Transform GetAvailableSpawnPoint()
@@ -135,6 +153,40 @@ namespace PVZ3D.Core
             else
             {
                 priceText.text = $"{plantType}\n{cost} Sun";
+            }
+        }
+
+        private void PlayShopSound(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(clip, purchaseVolume);
+                return;
+            }
+
+            AudioSource.PlayClipAtPoint(clip, transform.position, purchaseVolume);
+        }
+
+        private void PlayPurchaseConfetti(GameObject purchasedItem)
+        {
+            if (purchaseConfettiPrefab == null || purchasedItem == null)
+            {
+                return;
+            }
+
+            GameObject confetti = Instantiate(
+                purchaseConfettiPrefab,
+                purchasedItem.transform.position + purchaseConfettiOffset,
+                Quaternion.identity);
+
+            if (purchaseConfettiLifetime > 0f)
+            {
+                Destroy(confetti, purchaseConfettiLifetime);
             }
         }
 

@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2775236425835086727
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.49725
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.79702
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446420791782404456, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1611182853849340512, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: m_Name
+      value: InventoryManager Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4337252656804850035, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: collectItemClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 25a65afa1b4ed5a489a73576722f2d50, type: 3}
+    - target: {fileID: 4337252656804850035, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: takeItemOutClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 25a65afa1b4ed5a489a73576722f2d50, type: 3}
+    - target: {fileID: 4337252656804850035, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: inventoryOpenClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 30b5ae0840a945d40bf685b51658466d, type: 3}
+    - target: {fileID: 4337252656804850035, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: inventoryCloseClip
+      value: 
+      objectReference: {fileID: 8300000, guid: a43bdc5b716059e43b5374f1c1ccf316, type: 3}
+    - target: {fileID: 4337252656804850035, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}
+      propertyPath: inventoryExpandToggleClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 26c2b402cb666664b9e4e47f8b435d7f, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2ff04d5693402664b9a242953cbe012e, type: 3}

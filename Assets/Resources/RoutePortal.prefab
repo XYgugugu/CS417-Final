@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7059097529747165134}
   - component: {fileID: 8376907178766906628}
   - component: {fileID: 9091702669265642866}
-  - component: {fileID: 9077925690577720145}
   - component: {fileID: 6993835851251523694}
   m_Layer: 0
   m_Name: RoutePortal
@@ -115,20 +114,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9077925690577720145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1422991931943170976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84e731239a1d61644bfa9273d25c96d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RouteManager
-  targetSceneName: 
-  levelTransition: {fileID: 0}
 --- !u!114 &6993835851251523694
 MonoBehaviour:
   m_ObjectHideFlags: 0
