@@ -32,11 +32,26 @@ namespace PVZ3D.Core
         [Header("Price UI")]
         [SerializeField] private TextMeshProUGUI priceText;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip purchaseClip;
+        [SerializeField] private AudioClip purchaseFailedClip;
+        [SerializeField, Range(0f, 1f)] private float purchaseVolume = 1f;
+
+        [Header("Purchase Effect")]
+        [SerializeField] private GameObject purchaseConfettiPrefab;
+        [SerializeField] private Vector3 purchaseConfettiOffset = new Vector3(0f, 0.5f, 0f);
+        [SerializeField] private float purchaseConfettiLifetime = 3f;
+
         private XRSimpleInteractable interactable;
 
         private void Awake()
         {
             interactable = GetComponent<XRSimpleInteractable>();
+            if (audioSource == null)
+            {
+                audioSource = GetComponent<AudioSource>();
+            }
 
             if (interactable != null)
             {
@@ -75,19 +90,22 @@ namespace PVZ3D.Core
             if (!purchaseSucceeded)
             {
                 Debug.Log("Tool purchase failed: not enough coins.");
+                PlayShopSound(purchaseFailedClip);
                 return;
             }
 
-            SpawnTool();
+            GameObject spawnedTool = SpawnTool();
+            PlayShopSound(purchaseClip);
+            PlayPurchaseConfetti(spawnedTool);
             RefreshPriceText();
         }
 
-        private void SpawnTool()
+        private GameObject SpawnTool()
         {
             if (toolPrefab == null)
             {
                 Debug.LogWarning("ToolShopItem: toolPrefab is not assigned.");
-                return;
+                return null;
             }
 
             Transform point = GetAvailableSpawnPoint();
@@ -95,10 +113,10 @@ namespace PVZ3D.Core
             if (point == null)
             {
                 Debug.LogWarning("ToolShopItem: no empty spawn point found.");
-                return;
+                return null;
             }
 
-            Instantiate(toolPrefab, point.position, point.rotation);
+            return Instantiate(toolPrefab, point.position, point.rotation);
         }
 
         private Transform GetAvailableSpawnPoint()
@@ -132,6 +150,40 @@ namespace PVZ3D.Core
             if (priceText == null) return;
 
             priceText.text = $"{toolType}\n{coinCost} Coins";
+        }
+
+        private void PlayShopSound(AudioClip clip)
+        {
+            if (clip == null)
+            {
+                return;
+            }
+
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(clip, purchaseVolume);
+                return;
+            }
+
+            AudioSource.PlayClipAtPoint(clip, transform.position, purchaseVolume);
+        }
+
+        private void PlayPurchaseConfetti(GameObject purchasedItem)
+        {
+            if (purchaseConfettiPrefab == null || purchasedItem == null)
+            {
+                return;
+            }
+
+            GameObject confetti = Instantiate(
+                purchaseConfettiPrefab,
+                purchasedItem.transform.position + purchaseConfettiOffset,
+                Quaternion.identity);
+
+            if (purchaseConfettiLifetime > 0f)
+            {
+                Destroy(confetti, purchaseConfettiLifetime);
+            }
         }
 
         private void OnDrawGizmosSelected()
