@@ -1,0 +1,5 @@
+C:/Users/Admin/Desktop/CS417-Final/.utmp/RelWithDebInfo/n3h2k4k1/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Admin/Desktop/CS417-Final/.utmp/RelWithDebInfo/n3h2k4k1/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/Admin/Desktop/CS417-Final/.utmp/RelWithDebInfo/n3h2k4k1/arm64-v8a/GameActivity/CMakeFiles/game.dir
+C:/Users/Admin/Desktop/CS417-Final/.utmp/RelWithDebInfo/n3h2k4k1/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+C:/Users/Admin/Desktop/CS417-Final/.utmp/RelWithDebInfo/n3h2k4k1/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir
