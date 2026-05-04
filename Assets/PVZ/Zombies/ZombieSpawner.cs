@@ -1,33 +1,32 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using PVZ3D.Core;
 
 namespace PVZ3D.Zombies
 {
- public class ZombieSpawner : MonoBehaviour
+    public class ZombieSpawner : MonoBehaviour
     {
         [SerializeField] private GameManager gameManager;
         [SerializeField] private GameObject firstZombie;
         [SerializeField] private GameObject[] zombiePrefabs;
-        [SerializeField] public Transform[] spawnPoints;
+        [SerializeField] private Transform[] spawnPoints;
         [SerializeField] private float spawnInterval = 5f;
         [SerializeField] private int totalWaves = 3;
         [SerializeField] private int zombiesPerWave = 10;
-        [SerializeField] private float WavesInterval = 15f;
+        [SerializeField] private float wavesInterval = 15f;
         [SerializeField] private AudioSource waveWarningAudio;
         [SerializeField] private float spawnYOffset = 0.1f;
-        private bool isFirstZombie = true;
 
-        // UI hook events. UI listeners (tutorial popups, scoreboard, etc.) can
-        // subscribe without depending on this class's internals. Static so
-        // listeners don't need a scene reference.
-        public static event System.Action OnSpawnerStarted;
-        public static event System.Action<int, int> OnWaveStarted;   // (wave 1..totalWaves, totalWaves)
-        public static event System.Action OnAllWavesFinished;
+        private bool hasSpawnedFirstZombie;
+
+        public static event Action OnSpawnerStarted;
+        public static event Action<int, int> OnWaveStarted;
+        public static event Action OnAllWavesFinished;
 
         public int TotalWaves => totalWaves;
 
-        void Start()
+        private void Start()
         {
             ResolveGameManager()?.SetWaveProgress(0, totalWaves);
             StartCoroutine(SpawnWaves());
@@ -57,7 +56,7 @@ namespace PVZ3D.Zombies
                     yield return new WaitForSeconds(spawnInterval);
                 }
 
-                yield return new WaitForSeconds(WavesInterval);
+                yield return new WaitForSeconds(wavesInterval);
             }
 
             Debug.Log("All waves finished!");
@@ -73,29 +72,15 @@ namespace PVZ3D.Zombies
 
         private void SpawnZombie()
         {
-            if (spawnPoints.Length == 0) return;
+            if (spawnPoints == null || spawnPoints.Length == 0) return;
 
-            GameObject prefabToSpawn;
-
-            if (isFirstZombie && firstZombie != null)
-            {
-                prefabToSpawn = firstZombie;
-                isFirstZombie = false;
-            }
-            else
-            {
-                if (zombiePrefabs.Length == 0) return;
-                prefabToSpawn = zombiePrefabs[Random.Range(0, zombiePrefabs.Length)];
-            }
+            GameObject prefabToSpawn = GetZombiePrefab();
+            if (prefabToSpawn == null) return;
 
             Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
             Vector3 spawnPos = spawnPoint.position + new Vector3(0f, spawnYOffset, 0f);
 
-            Instantiate(
-                prefabToSpawn,
-                spawnPos,
-                Quaternion.identity
-            );
+            Instantiate(prefabToSpawn, spawnPos, Quaternion.identity);
         }
 
         public void SpawnZombies(int count)
@@ -104,6 +89,22 @@ namespace PVZ3D.Zombies
             {
                 SpawnZombie();
             }
+        }
+
+        private GameObject GetZombiePrefab()
+        {
+            if (!hasSpawnedFirstZombie && firstZombie != null)
+            {
+                hasSpawnedFirstZombie = true;
+                return firstZombie;
+            }
+
+            if (zombiePrefabs == null || zombiePrefabs.Length == 0)
+            {
+                return null;
+            }
+
+            return zombiePrefabs[Random.Range(0, zombiePrefabs.Length)];
         }
 
         private GameManager ResolveGameManager()

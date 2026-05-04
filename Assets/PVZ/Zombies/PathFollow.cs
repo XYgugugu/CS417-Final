@@ -5,33 +5,33 @@ namespace PVZ3D.Zombies
     public class PathFollow : MonoBehaviour
     {
         [SerializeField] private float moveSpeed = 0.5f;
-        [SerializeField] public float destination = 2f;
+        [SerializeField] private float destination = 2f;
 
-        // Fake Walk Motion
-        private float bobAmount = 0.05f;
-        private float bobSpeed = 5f;
+        private const float BobAmount = 0.05f;
+        private const float BobSpeed = 5f;
+
         private Vector3 startLocalPosition;
 
-        private bool reachedDestination = false;
-        private bool isAttacking = false;
+        private bool reachedDestination;
 
-        void Start()
+        public bool IsStopped { get; private set; }
+
+        private void Start()
         {
             startLocalPosition = transform.localPosition;
         }
-        void Update()
+
+        private void Update()
         {
-            if (reachedDestination || isAttacking) return;
+            if (reachedDestination || IsStopped) return;
 
             transform.position += Vector3.forward * moveSpeed * Time.deltaTime;
 
-            float bob = Mathf.Sin(Time.time * bobSpeed) * bobAmount;
+            float bob = Mathf.Sin(Time.time * BobSpeed) * BobAmount;
             transform.localPosition = new Vector3(
-            transform.localPosition.x,
-            startLocalPosition.y + bob,
-            transform.localPosition.z
-        );
-
+                transform.localPosition.x,
+                startLocalPosition.y + bob,
+                transform.localPosition.z);
 
             if (transform.position.z >= destination)
             {
@@ -42,18 +42,12 @@ namespace PVZ3D.Zombies
 
         public void StopMoving()
         {
-            isAttacking = true;
+            IsStopped = true;
         }
 
         public void ResumeMoving()
         {
-            isAttacking = false;
-        }
-
-        public bool IsStopped()
-        {
-            return isAttacking;
+            IsStopped = false;
         }
     }
-
 }

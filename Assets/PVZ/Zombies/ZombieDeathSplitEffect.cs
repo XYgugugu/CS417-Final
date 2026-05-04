@@ -14,10 +14,6 @@ namespace PVZ3D.Zombies
 
         [SerializeField] private float disappearTime = 3f;
 
-        // private void OnDestroy()
-        // {
-        //     PlayDeathSplit();
-        // }
         private void Awake()
         {
             PlayDeathSplit();
@@ -28,17 +24,8 @@ namespace PVZ3D.Zombies
         {
             if (basicZLower == null || basicZUpper == null) return;
 
-            GameObject lower = Instantiate(
-                basicZLower,
-                transform.position,
-                transform.rotation
-            );
-
-            GameObject upper = Instantiate(
-                basicZUpper,
-                transform.position,
-                transform.rotation
-            );
+            GameObject lower = Instantiate(basicZLower, transform.position, transform.rotation);
+            GameObject upper = Instantiate(basicZUpper, transform.position, transform.rotation);
 
             Rigidbody upperRb = upper.AddComponent<Rigidbody>();
             upperRb.useGravity = true;

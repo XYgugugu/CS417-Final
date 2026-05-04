@@ -2183,7 +2183,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1931e3d72e889a14b92abcea25747a82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseZone
-  fallbackDamageAmount: 20
 --- !u!1 &715733464
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Reflection;
 using PVZ3D.Zombies;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,9 +24,6 @@ namespace PVZ3D.Misc
         [SerializeField] private LayerMask zombieHitMask = ~0;
 
         private readonly List<Vector3> samples = new List<Vector3>(64);
-        private static readonly MethodInfo ZombieDieMethod = typeof(ZombieBase).GetMethod(
-            "Die",
-            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         private InputAction fallbackTriggerAction;
         private bool isSlicing;
@@ -171,11 +167,8 @@ namespace PVZ3D.Misc
                 return;
             }
 
-            if (ZombieDieMethod != null)
-            {
-                ZombieDieMethod.Invoke(zombie, null);
-                Debug.Log($"{name} sliced zombie: {zombie.name}", this);
-            }
+            zombie.Kill();
+            Debug.Log($"{name} sliced zombie: {zombie.name}", this);
         }
 
         private ZombieBase FindZombieInFront()
