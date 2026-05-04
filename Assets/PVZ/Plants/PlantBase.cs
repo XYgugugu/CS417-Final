@@ -5,13 +5,13 @@ namespace PVZ3D.Plants
 {
     public class PlantBase : MonoBehaviour
     {
-        [SerializeField] private float maxHealth = 100f;
-        [SerializeField] private float currentHealth;
-        [SerializeField] private Vector3 hurtboxCenter = new Vector3(0f, 0.45f, 0f);
-        [SerializeField] private Vector3 hurtboxSize = new Vector3(0.8f, 0.9f, 0.8f);
-        [SerializeField] private bool isPlaced;
-        [SerializeField] private Color feedbackStartColor = new Color(0.42f, 0.8f, 0.25f, 1f);
-        [SerializeField] private Color feedbackEndColor = new Color(0.55f, 0.38f, 0.16f, 0.7f);
+        private float maxHealth = 100f;
+        private float currentHealth;
+        private Vector3 hurtboxCenter = new Vector3(0f, 0.45f, 0f);
+        private Vector3 hurtboxSize = new Vector3(0.8f, 0.9f, 0.8f);
+        private bool isPlaced;
+        private Color feedbackStartColor = new Color(0.42f, 0.8f, 0.25f, 1f);
+        private Color feedbackEndColor = new Color(0.55f, 0.38f, 0.16f, 0.7f);
 
         public float MaxHealth => maxHealth;
         public float CurrentHealth => currentHealth;
@@ -24,28 +24,28 @@ namespace PVZ3D.Plants
             currentHealth = Mathf.Max(1f, maxHealth);
         }
 
-        public void SetMaxHealth(float value, bool refillHealth = true)
+        protected void InitializePlant(
+            float health,
+            Vector3 hurtboxCenter,
+            Vector3 hurtboxSize,
+            Color plantedFeedbackColor,
+            Color deathFeedbackColor,
+            PlantVisualKind visualKind)
         {
-            maxHealth = Mathf.Max(1f, value);
-            if (refillHealth)
-            {
-                currentHealth = maxHealth;
-            }
-            else
-            {
-                currentHealth = Mathf.Min(currentHealth, maxHealth);
-            }
+            maxHealth = Mathf.Max(1f, health);
+            currentHealth = maxHealth;
+            ConfigureHurtbox(hurtboxCenter, hurtboxSize);
+            feedbackStartColor = plantedFeedbackColor;
+            feedbackEndColor = deathFeedbackColor;
+            EnsureHurtbox();
+            PlantVisualUtility.EnsurePlantVisual(transform, visualKind);
+            PlantVisualUtility.EnsurePlantInteraction(transform);
         }
 
-        public void MultiplyMaxHealth(float multiplier, bool refillHealth = true)
+        private void ConfigureHurtbox(Vector3 center, Vector3 size)
         {
-            SetMaxHealth(maxHealth * Mathf.Max(0.1f, multiplier), refillHealth);
-        }
-
-        protected void ConfigureHurtbox(Vector3 center, Vector3 size)
-        {
-            hurtboxCenter = center;
-            hurtboxSize = new Vector3(
+            this.hurtboxCenter = center;
+            this.hurtboxSize = new Vector3(
                 Mathf.Max(0.1f, size.x),
                 Mathf.Max(0.1f, size.y),
                 Mathf.Max(0.1f, size.z));
@@ -57,7 +57,7 @@ namespace PVZ3D.Plants
             }
         }
 
-        protected void EnsureHurtbox()
+        private void EnsureHurtbox()
         {
             BoxCollider box = GetComponent<BoxCollider>();
             if (box == null)
@@ -77,17 +77,7 @@ namespace PVZ3D.Plants
             body.isKinematic = false;
         }
 
-        protected void ConfigureFeedbackColors(Color startColor, Color endColor)
-        {
-            feedbackStartColor = startColor;
-            feedbackEndColor = endColor;
-        }
-
-        protected virtual void RefreshFeedbackColors()
-        {
-        }
-
-        public virtual void TakeDamage(float amount)
+        public void TakeDamage(float amount)
         {
             if (IsDead || amount <= 0f)
             {
@@ -101,10 +91,8 @@ namespace PVZ3D.Plants
             }
         }
 
-        [ContextMenu("Play Planted Feedback")]
-        public void PlayPlantedFeedback()
+        private void PlayPlantedFeedback()
         {
-            RefreshFeedbackColors();
             PlantVisualUtility.CreateParticleBurst(
                 transform.position + Vector3.up * 0.08f,
                 feedbackStartColor,
@@ -117,18 +105,12 @@ namespace PVZ3D.Plants
                 "Plant Planted Feedback");
         }
 
-        [ContextMenu("Kill Plant")]
-        public void KillPlantForTest()
-        {
-            TakeDamage(currentHealth);
-        }
-
-        public virtual bool CanPlaceOn(GridCell cell)
+        public bool CanPlaceOn(GridCell cell)
         {
             return !IsDead && cell != null && (OccupiedCell == null || OccupiedCell == cell);
         }
 
-        public virtual void PlaceOnCell(GridCell cell)
+        public void PlaceOnCell(GridCell cell)
         {
             if (!CanPlaceOn(cell))
             {
@@ -140,18 +122,7 @@ namespace PVZ3D.Plants
             PlayPlantedFeedback();
         }
 
-        public virtual void RemoveFromCell(GridCell cell)
-        {
-            if (OccupiedCell != cell)
-            {
-                return;
-            }
-
-            OccupiedCell = null;
-            isPlaced = false;
-        }
-
-        protected virtual void Die()
+        private void Die()
         {
             if (IsDead)
             {
@@ -174,7 +145,6 @@ namespace PVZ3D.Plants
 
         private void SpawnDeathFeedback()
         {
-            RefreshFeedbackColors();
             PlantVisualUtility.CreateParticleBurst(
                 transform.position + Vector3.up * Mathf.Max(0.35f, hurtboxCenter.y),
                 feedbackEndColor,

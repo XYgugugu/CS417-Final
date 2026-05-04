@@ -25,39 +25,30 @@ namespace PVZ3D.Plants
                 return;
             }
 
-            EnsurePlantInteraction(root.gameObject);
-        }
-
-        public static void EnsurePlantInteraction(GameObject root)
-        {
-            if (root == null)
-            {
-                return;
-            }
-
-            BoxCollider collider = root.GetComponent<BoxCollider>();
+            GameObject rootObject = root.gameObject;
+            BoxCollider collider = rootObject.GetComponent<BoxCollider>();
             if (collider == null)
             {
-                collider = root.AddComponent<BoxCollider>();
-                FitColliderToRenderers(root, collider);
+                collider = rootObject.AddComponent<BoxCollider>();
+                FitColliderToRenderers(rootObject, collider);
             }
 
             collider.isTrigger = false;
 
-            Rigidbody body = root.GetComponent<Rigidbody>();
+            Rigidbody body = rootObject.GetComponent<Rigidbody>();
             if (body == null)
             {
-                body = root.AddComponent<Rigidbody>();
+                body = rootObject.AddComponent<Rigidbody>();
             }
 
             body.useGravity = true;
             body.isKinematic = false;
             body.constraints = RigidbodyConstraints.FreezeRotation;
 
-            XRGrabInteractable grab = root.GetComponent<XRGrabInteractable>();
+            XRGrabInteractable grab = rootObject.GetComponent<XRGrabInteractable>();
             if (grab == null)
             {
-                grab = root.AddComponent<XRGrabInteractable>();
+                grab = rootObject.AddComponent<XRGrabInteractable>();
             }
 
             grab.movementType = XRBaseInteractable.MovementType.VelocityTracking;
@@ -84,44 +75,6 @@ namespace PVZ3D.Plants
             }
 
             CreateFallbackPlantVisual(parent, kind);
-        }
-
-        public static GameObject CreateSunVisual(Vector3 position)
-        {
-            return CreateSunVisual(position, 1f, 25);
-        }
-
-        public static Transform FindVisualRoot(Transform parent)
-        {
-            if (parent == null)
-            {
-                return null;
-            }
-
-            for (int i = 0; i < parent.childCount; i++)
-            {
-                Transform child = parent.GetChild(i);
-                if (child.GetComponentInChildren<Renderer>(true) != null)
-                {
-                    return child;
-                }
-            }
-
-            return null;
-        }
-
-        public static void ScaleVisualRoot(Transform parent, Vector3 scaleMultiplier)
-        {
-            Transform visualRoot = FindVisualRoot(parent);
-            if (visualRoot == null)
-            {
-                return;
-            }
-
-            visualRoot.localScale = new Vector3(
-                visualRoot.localScale.x * scaleMultiplier.x,
-                visualRoot.localScale.y * scaleMultiplier.y,
-                visualRoot.localScale.z * scaleMultiplier.z);
         }
 
         public static GameObject CreateSunVisual(Vector3 position, float visualScale, int sunValue)

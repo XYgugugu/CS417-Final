@@ -44,9 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59f82794f8b54d81a193911a9abad922, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 800
-  currentHealth: 0
-  hurtboxCenter: {x: 0, y: 0.5, z: 0}
-  hurtboxSize: {x: 1, y: 1, z: 1}
-  isPlaced: 0
-  isTallNut: 0

@@ -5,10 +5,12 @@ namespace PVZ3D.Plants
 {
     public class PeaProjectile : MonoBehaviour
     {
+        private const float VisualRadius = 0.18f * PlantVisualUtility.PrefabScale;
+
         [SerializeField] private float damage = 20f;
         [SerializeField] private float speed = 5f;
         [SerializeField] private float lifetime = 6f;
-        [SerializeField] private float hitRadius = 0.18f * PlantVisualUtility.PrefabScale;
+        [SerializeField] private float hitRadius = VisualRadius;
 
         private Vector3 direction = Vector3.forward;
         private bool hasHit;
@@ -17,34 +19,6 @@ namespace PVZ3D.Plants
         {
             GameObject pea = new GameObject("Pea Projectile");
             pea.transform.position = position;
-
-            GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            visual.name = "Pea Visual";
-            visual.transform.SetParent(pea.transform, false);
-            visual.transform.localScale = Vector3.one * 0.18f * PlantVisualUtility.PrefabScale;
-
-            Renderer renderer = visual.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                renderer.material.color = new Color(0.2f, 0.85f, 0.25f);
-            }
-
-            Collider visualCollider = visual.GetComponent<Collider>();
-            if (visualCollider != null)
-            {
-                Destroy(visualCollider);
-            }
-
-            SphereCollider collider = pea.AddComponent<SphereCollider>();
-            if (collider != null)
-            {
-                collider.radius = 0.18f * PlantVisualUtility.PrefabScale;
-                collider.isTrigger = true;
-            }
-
-            Rigidbody body = pea.AddComponent<Rigidbody>();
-            body.useGravity = false;
-            body.isKinematic = true;
 
             PeaProjectile projectile = pea.AddComponent<PeaProjectile>();
             projectile.direction = direction.sqrMagnitude > 0.001f ? direction.normalized : Vector3.forward;
@@ -119,48 +93,19 @@ namespace PVZ3D.Plants
             }
 
             ZombieBase zombie = ResolveZombie(other);
-            if (zombie == null && !IsZombieTagged(other))
+            if (zombie == null)
             {
                 return false;
             }
 
             ConsumeProjectile();
-
-            if (zombie != null)
-            {
-                zombie.TakeDamage(damage);
-            }
-            else
-            {
-                other.SendMessageUpwards("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
-            }
-
+            zombie.TakeDamage(damage);
             return true;
         }
 
         private void ConsumeProjectile()
         {
             hasHit = true;
-            enabled = false;
-
-            Collider[] colliders = GetComponentsInChildren<Collider>();
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i] != null)
-                {
-                    colliders[i].enabled = false;
-                }
-            }
-
-            Renderer[] renderers = GetComponentsInChildren<Renderer>();
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                if (renderers[i] != null)
-                {
-                    renderers[i].enabled = false;
-                }
-            }
-
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
@@ -184,39 +129,6 @@ namespace PVZ3D.Plants
             return other == null || other.transform == transform || other.transform.IsChildOf(transform);
         }
 
-        private static bool IsZombieTagged(Collider other)
-        {
-            Transform current = other.transform;
-            while (current != null)
-            {
-                if (current.CompareTag("Zombie"))
-                {
-                    return true;
-                }
-
-                current = current.parent;
-            }
-
-            Rigidbody attachedBody = other.attachedRigidbody;
-            if (attachedBody == null)
-            {
-                return false;
-            }
-
-            current = attachedBody.transform;
-            while (current != null)
-            {
-                if (current.CompareTag("Zombie"))
-                {
-                    return true;
-                }
-
-                current = current.parent;
-            }
-
-            return false;
-        }
-
         private static ZombieBase ResolveZombie(Collider other)
         {
             ZombieBase zombie = other.GetComponentInParent<ZombieBase>();
@@ -236,7 +148,7 @@ namespace PVZ3D.Plants
                 GameObject visual = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 visual.name = "Pea Visual";
                 visual.transform.SetParent(transform, false);
-                visual.transform.localScale = Vector3.one * 0.18f * PlantVisualUtility.PrefabScale;
+                visual.transform.localScale = Vector3.one * VisualRadius;
 
                 Renderer renderer = visual.GetComponent<Renderer>();
                 if (renderer != null)
