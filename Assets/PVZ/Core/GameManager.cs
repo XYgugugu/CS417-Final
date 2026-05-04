@@ -8,6 +8,7 @@ namespace PVZ3D.Core
     public class GameManager : MonoBehaviour
     {
         public event Action<bool> OnGameEnded;
+        public event Action OnLevelCleared;
         public event Action OnStatsChanged;
 
         [Header("Player")]
@@ -30,8 +31,10 @@ namespace PVZ3D.Core
         [Header("Game State")]
         [SerializeField] private bool gameOver;
         [SerializeField] private bool didWin;
+        [SerializeField] private bool levelCleared;
         public bool GameOver => gameOver;
         public bool DidWin => didWin;
+        public bool LevelCleared => levelCleared;
 
         [SerializeField] private int score;
         public int Score => score;
@@ -73,12 +76,29 @@ namespace PVZ3D.Core
             EndGame(true);
         }
 
+        public void ClearLevel()
+        {
+            if (gameOver || levelCleared)
+            {
+                return;
+            }
+
+            levelCleared = true;
+            lossTimer.PauseTimer();
+            OnLevelCleared?.Invoke();
+            Debug.Log("Level Clear.");
+        }
+
         private void EndGame(bool win)
         {
             if (gameOver) return;
 
             gameOver = true;
             didWin = win;
+            if (win)
+            {
+                levelCleared = true;
+            }
             RemoveGameplayObjects();
             OnGameEnded?.Invoke(didWin);
             Debug.Log(didWin ? "Victory." : "Game Over.");

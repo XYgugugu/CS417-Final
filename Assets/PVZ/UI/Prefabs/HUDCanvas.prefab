@@ -1739,7 +1739,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1732137996685874104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2966,6 +2966,14 @@ MonoBehaviour:
   restartButton: {fileID: 4846130549475367430}
   mainMenuButton: {fileID: 1570644301356830904}
   quitButton: {fileID: 8401041719536033580}
+  mainMenuSceneName: Entry
+  enableXRInteraction: 1
+  enableMouseInteraction: 1
+  stabilizeCanvasForXR: 1
+  detachCanvasFromParent: 1
+  xrPanelDistance: 2
+  xrPanelOffset: {x: 0, y: -0.15, z: 0}
+  yawOnlyFacing: 1
 --- !u!1 &6811990082217452147
 GameObject:
   m_ObjectHideFlags: 0

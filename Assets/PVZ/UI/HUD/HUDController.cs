@@ -26,6 +26,7 @@ namespace PVZ3D.UI
             if (gameManager != null)
             {
                 gameManager.OnGameEnded += HandleGameOver;
+                gameManager.OnLevelCleared += HandleLevelCleared;
             }
 
             Refresh();
@@ -36,6 +37,7 @@ namespace PVZ3D.UI
             if (gameManager != null)
             {
                 gameManager.OnGameEnded -= HandleGameOver;
+                gameManager.OnLevelCleared -= HandleLevelCleared;
             }
         }
 
@@ -54,13 +56,19 @@ namespace PVZ3D.UI
             Refresh();
         }
 
+        private void HandleLevelCleared()
+        {
+            Refresh();
+        }
+
         private void Refresh()
         {
             bool isGameOver = gameManager != null && gameManager.GameOver;
+            bool isLevelCleared = gameManager != null && gameManager.LevelCleared;
 
             if (hudRoot != null)
             {
-                hudRoot.SetActive(true);
+                hudRoot.SetActive(!isGameOver && !isLevelCleared);
             }
 
             if (winLoseRoot != null)
@@ -75,6 +83,19 @@ namespace PVZ3D.UI
         /// </summary>
         public void ShowVictoryUI()
         {
+            gameManager = ResolveGameManager();
+            if (gameManager != null && !gameManager.GameOver)
+            {
+                if (!gameManager.LevelCleared)
+                {
+                    Debug.LogWarning("HUDController: Victory UI requested before level clear.");
+                    return;
+                }
+
+                gameManager.WinGame();
+                return;
+            }
+
             if (hudRoot != null)
             {
                 hudRoot.SetActive(false);

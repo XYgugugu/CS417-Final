@@ -68,7 +68,7 @@ namespace PVZ3D.Zombies
                 yield return null;
             }
 
-            ResolveGameManager()?.WinGame();
+            ResolveGameManager()?.ClearLevel();
         }
 
         private void SpawnZombie()
