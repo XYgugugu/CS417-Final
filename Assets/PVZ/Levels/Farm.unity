@@ -465,7 +465,7 @@ MonoBehaviour:
     peaShooterCooldownRemain: 0
     wallNutCooldownRemain: 0
   resourceManager:
-    initCoins: 0
+    initCoins: 5
     coins: 0
   gameOver: 0
   didWin: 0
@@ -488,6 +488,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &200968515 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8660002710057369878, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+  m_PrefabInstance: {fileID: 264931015}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &231898629
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,6 +536,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shop
       objectReference: {fileID: 0}
+    - target: {fileID: 864189362781645259, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_Name
+      value: Replicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 2701182785072202912, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: m_text
+      value: 'Replicator
+
+        5 Coins'
+      objectReference: {fileID: 0}
     - target: {fileID: 2705267334467639357, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.989
@@ -571,6 +586,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: toolPrefab
+      value: 
+      objectReference: {fileID: 690044030361800333, guid: 5a7278e94504ebd4ebbc20f5d793a333, type: 3}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: spawnPoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3228288965722360442, guid: abd4165e4af02ee40b708cd1a9f3538c, type: 3}
+      propertyPath: 'spawnPoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 200968515}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
