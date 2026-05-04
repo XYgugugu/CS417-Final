@@ -23,6 +23,9 @@ namespace PVZ3D.Zombies
         [SerializeField] private int coinDropAmount = 1;
         [SerializeField] private int scoreValue = 10;
 
+        [Header("Type")]
+        [SerializeField] private GameObject SlicePrefab;
+
         [Header("Game Stats")]
         [SerializeField] private GameManager gameManager;
 
@@ -260,6 +263,11 @@ namespace PVZ3D.Zombies
                 deathAudio.Play();
                 float destroyDelay = deathAudio.clip != null ? deathAudio.clip.length : 1f;
                 Destroy(deathAudio.gameObject, destroyDelay);
+            }
+
+            if (SlicePrefab != null)
+            {
+                Instantiate(SlicePrefab, transform.position, transform.rotation);
             }
 
             Destroy(gameObject);

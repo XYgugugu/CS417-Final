@@ -317,6 +317,7 @@ MonoBehaviour:
   coinPrefab: {fileID: 9030540585188458901, guid: 3e859b8a21c85884781ebb8604b41a01, type: 3}
   coinDropAmount: 3
   scoreValue: 10
+  SlicePrefab: {fileID: 8251831201985743456, guid: b3ccaba34ecf41c4c8614d0e09fdc8c0, type: 3}
   gameManager: {fileID: 0}
   attackDistance: 0.08
   attackSpeed: 8
