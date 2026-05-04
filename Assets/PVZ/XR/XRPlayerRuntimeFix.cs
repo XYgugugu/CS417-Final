@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace PVZ3D.XR
 {
@@ -9,27 +11,65 @@ namespace PVZ3D.XR
     public class XRPlayerRuntimeFix : MonoBehaviour
     {
         [SerializeField] private string simulatorObjectName = "XR Interaction Simulator";
+        [SerializeField] private string gravityProviderObjectName = "Gravity";
         [SerializeField] private float deviceModeFallbackHeight = 1.65f;
+        [SerializeField] private bool disableGravityProvider = true;
+
+        private static readonly List<InputDevice> HeadMountedDevices = new();
 
         private void Awake()
         {
-#if !UNITY_EDITOR
-            DisableInteractionSimulator();
-            ConfigureXROrigin();
-#endif
+            ApplyRuntimeFixes();
         }
 
         private IEnumerator Start()
         {
-#if !UNITY_EDITOR
             yield return null;
-            ConfigureXROrigin();
-#else
-            yield break;
-#endif
+            ApplyRuntimeFixes();
+
+            yield return new WaitForSecondsRealtime(0.25f);
+            ApplyRuntimeFixes();
         }
 
-#if !UNITY_EDITOR
+        private void ApplyRuntimeFixes()
+        {
+            if (!Application.isEditor || IsHeadsetActive())
+            {
+                DisableInteractionSimulator();
+            }
+
+            ConfigureXROrigin();
+
+            if (disableGravityProvider)
+            {
+                DisableGravityProvider();
+            }
+        }
+
+        private static bool IsHeadsetActive()
+        {
+            if (XRSettings.isDeviceActive)
+            {
+                return true;
+            }
+
+            HeadMountedDevices.Clear();
+            InputDevices.GetDevicesWithCharacteristics(
+                InputDeviceCharacteristics.HeadMounted,
+                HeadMountedDevices
+            );
+
+            for (int i = 0; i < HeadMountedDevices.Count; i++)
+            {
+                if (HeadMountedDevices[i].isValid)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void DisableInteractionSimulator()
         {
             Transform simulator = FindDeepChild(transform, simulatorObjectName);
@@ -45,7 +85,24 @@ namespace PVZ3D.XR
             if (xrOrigin == null) return;
 
             xrOrigin.CameraYOffset = deviceModeFallbackHeight;
-            xrOrigin.RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Floor;
+            xrOrigin.RequestedTrackingOriginMode = XROrigin.TrackingOriginMode.Device;
+
+            if (xrOrigin.CameraFloorOffsetObject != null)
+            {
+                Transform cameraOffset = xrOrigin.CameraFloorOffsetObject.transform;
+                Vector3 localPosition = cameraOffset.localPosition;
+                localPosition.y = deviceModeFallbackHeight;
+                cameraOffset.localPosition = localPosition;
+            }
+        }
+
+        private void DisableGravityProvider()
+        {
+            Transform gravityProvider = FindDeepChild(transform, gravityProviderObjectName);
+            if (gravityProvider != null)
+            {
+                gravityProvider.gameObject.SetActive(false);
+            }
         }
 
         private Transform FindDeepChild(Transform root, string childName)
@@ -60,6 +117,5 @@ namespace PVZ3D.XR
 
             return null;
         }
-#endif
     }
 }
