@@ -2468,6 +2468,9 @@ MonoBehaviour:
   attackInterval: 1
   coinPrefab: {fileID: 0}
   coinDropAmount: 1
+  scoreValue: 10
+  SlicePrefab: {fileID: 1135614738830937516, guid: 4067b7352ef83da49a369c8f959d675c, type: 3}
+  gameManager: {fileID: 0}
   attackDistance: 0.08
   attackSpeed: 8
   walkAudio: {fileID: 0}

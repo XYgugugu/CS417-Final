@@ -197,6 +197,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1286800580741114345}
+    - targetCorrespondingSourceObject: {fileID: 1670256624, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3445126907034803002}
   m_SourcePrefab: {fileID: 100100000, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
 --- !u!1 &7695777549964510634 stripped
 GameObject:
@@ -247,6 +250,46 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &3445126907034803001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1670256624, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 7695777548509819611}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3445126907034803002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3445126907034803001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a82d9b57a1e49a4c8e2b3f65d0900a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Misc.SliceAction
+  triggerAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: 
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 00000000-0000-0000-0000-000000000000
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  triggerPressThreshold: 0.5
+  slicePointLocalOffset: {x: 0, y: 0, z: 0.75}
+  minimumSliceLength: 0.35
+  minimumSampleDistance: 0.01
+  minimumStraightness: 0.9
+  maximumLineDeviation: 0.08
+  zombieHitDistance: 2
+  zombieHitRadius: 0.35
+  zombieHitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!4 &9014942541343350005 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
