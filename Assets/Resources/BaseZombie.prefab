@@ -2448,7 +2448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PVZ3D.Zombies.PathFollow
   moveSpeed: 0.5
-  destination: 2
+  destination: 2.5
 --- !u!114 &-1354472267252909389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2468,6 +2468,8 @@ MonoBehaviour:
   attackInterval: 1
   coinPrefab: {fileID: 0}
   coinDropAmount: 1
+  scoreValue: 10
+  gameManager: {fileID: 0}
   attackDistance: 0.08
   attackSpeed: 8
   walkAudio: {fileID: 0}
