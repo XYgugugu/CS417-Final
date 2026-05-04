@@ -134,17 +134,17 @@ namespace PVZ3D.Levels
 
         private void InstantWin()
         {
-            Debug.Log("Secret Event: Instant win triggered.");
+            Debug.Log("Secret Event: Instant level clear triggered.");
 
             GameManager gm = ResolveGameManager();
             if (gm != null)
             {
-                gm.WinGame();
-                Debug.Log("Secret Event: Connected to existing GameManager.WinGame().");
+                gm.ClearLevel();
+                Debug.Log("Secret Event: Connected to existing GameManager.ClearLevel().");
                 return;
             }
 
-            Debug.Log("Secret Event: No GameManager found. Win trigger remains a placeholder.");
+            Debug.Log("Secret Event: No GameManager found. Level clear trigger remains a placeholder.");
         }
 
         private void SpawnNewZombies(int count)

@@ -6,8 +6,7 @@ namespace PVZ3D.Levels
     /// <summary>
     /// Manages route portal visibility based on level clear state.
     /// - Hides route portals at start.
-    /// - Shows them when GameManager.OnGameEnded fires with didWin=true.
-    /// - Deletes HUDCanvas after level clear.
+    /// - Shows them when GameManager.OnLevelCleared fires.
     /// </summary>
     public class LevelClearRouteUnlocker : MonoBehaviour
     {
@@ -27,10 +26,10 @@ namespace PVZ3D.Levels
                 gameManager = FindObjectOfType<GameManager>();
             }
 
-            // Subscribe to game end event
+            // Subscribe to level-clear event
             if (gameManager != null)
             {
-                gameManager.OnGameEnded += OnGameEnded;
+                gameManager.OnLevelCleared += OnLevelCleared;
             }
             else
             {
@@ -38,16 +37,14 @@ namespace PVZ3D.Levels
             }
         }
 
-        private void OnGameEnded(bool didWin)
+        private void OnLevelCleared()
         {
-            if (!didWin) return;
             if (hasUnlockedPortals) return;
 
             hasUnlockedPortals = true;
 
             Debug.Log("LevelClearRouteUnlocker: Level cleared! Showing route portals.");
             ShowRoutePortals();
-            DeleteHUDCanvas();
         }
 
         private void HideRoutePortals()
@@ -84,26 +81,23 @@ namespace PVZ3D.Levels
             Debug.Log($"LevelClearRouteUnlocker: Showing {routePortals.Length} route portal(s).");
         }
 
-        private void DeleteHUDCanvas()
-        {
-            GameObject hudCanvas = GameObject.Find("HUDCanvas");
-            if (hudCanvas != null)
-            {
-                // Destroy(hudCanvas);
-                hudCanvas.SetActive(false);
-                Debug.Log("LevelClearRouteUnlocker: HUDCanvas destroyed.");
-            }
-            else
-            {
-                Debug.LogWarning("LevelClearRouteUnlocker: HUDCanvas not found in scene.");
-            }
-        }
-
         // Testing for unlocking route portals without needing to clear the level
         [ContextMenu("Test Unlock Route Portals")]
         private void TestUnlockRoutePortals()
         {
-            OnGameEnded(true);
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            if (gameManager != null)
+            {
+                gameManager.ClearLevel();
+            }
+            else
+            {
+                OnLevelCleared();
+            }
         }
 
 
@@ -112,7 +106,7 @@ namespace PVZ3D.Levels
             // Unsubscribe to prevent memory leaks
             if (gameManager != null)
             {
-                gameManager.OnGameEnded -= OnGameEnded;
+                gameManager.OnLevelCleared -= OnLevelCleared;
             }
         }
     }

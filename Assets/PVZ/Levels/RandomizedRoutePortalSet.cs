@@ -10,7 +10,7 @@ namespace PVZ3D.Levels
     /// <summary>
     /// Manages randomized route portal behavior after level clear.
     /// - Hides all portals at start.
-    /// - On level win, randomizes which portal triggers which action.
+    /// - On level clear, randomizes which portal triggers which action.
     /// - Actions: Scene 1, Scene 2, or Victory UI.
     /// - Optionally updates portal labels to show the randomized action.
     /// </summary>
@@ -64,10 +64,10 @@ namespace PVZ3D.Levels
                 hudController = FindObjectOfType<HUDController>();
             }
 
-            // Subscribe to game end event
+            // Subscribe to level-clear event
             if (gameManager != null)
             {
-                gameManager.OnGameEnded += OnGameEnded;
+                gameManager.OnLevelCleared += OnLevelCleared;
             }
             else
             {
@@ -75,9 +75,8 @@ namespace PVZ3D.Levels
             }
         }
 
-        private void OnGameEnded(bool didWin)
+        private void OnLevelCleared()
         {
-            if (!didWin) return;
             if (hasRandomizedPortals) return;
 
             hasRandomizedPortals = true;
@@ -151,6 +150,7 @@ namespace PVZ3D.Levels
         private void ExecutePortalAction(int portalIndex)
         {
             if (portalIndex < 0 || portalIndex >= 3) return;
+            if (!hasRandomizedPortals) return;
 
             PortalAction action = portalActions[portalIndex];
 
@@ -189,7 +189,22 @@ namespace PVZ3D.Levels
         {
             Debug.Log($"RandomizedRoutePortalSet: Portal {portalIndex} triggering victory UI.");
 
-            if (hudController != null)
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            if (gameManager != null)
+            {
+                if (!gameManager.LevelCleared)
+                {
+                    Debug.LogWarning("RandomizedRoutePortalSet: Victory portal selected before level clear.");
+                    return;
+                }
+
+                gameManager.WinGame();
+            }
+            else if (hudController != null)
             {
                 hudController.ShowVictoryUI();
             }
@@ -255,14 +270,26 @@ namespace PVZ3D.Levels
         [ContextMenu("Test Show Randomized Portals")]
         private void TestShowRandomizedPortals()
         {
-            OnGameEnded(true);
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            if (gameManager != null)
+            {
+                gameManager.ClearLevel();
+            }
+            else
+            {
+                OnLevelCleared();
+            }
         }
 
         private void OnDestroy()
         {
             if (gameManager != null)
             {
-                gameManager.OnGameEnded -= OnGameEnded;
+                gameManager.OnLevelCleared -= OnLevelCleared;
             }
         }
     }

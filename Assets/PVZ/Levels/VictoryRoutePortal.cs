@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using PVZ3D.Core;
 using PVZ3D.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -11,6 +12,7 @@ namespace PVZ3D.Levels
     /// </summary>
     public class VictoryRoutePortal : MonoBehaviour
     {
+        [SerializeField] private GameManager gameManager;
         [SerializeField] private HUDController hudController;
         private XRSimpleInteractable interactable;
 
@@ -31,6 +33,11 @@ namespace PVZ3D.Levels
             {
                 hudController = FindObjectOfType<HUDController>();
             }
+
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
         }
 
         private void OnDestroy()
@@ -48,7 +55,23 @@ namespace PVZ3D.Levels
 
         public void ShowVictory()
         {
-            if (hudController != null)
+            if (gameManager == null)
+            {
+                gameManager = FindObjectOfType<GameManager>();
+            }
+
+            if (gameManager != null)
+            {
+                if (!gameManager.LevelCleared)
+                {
+                    Debug.LogWarning("VictoryRoutePortal: Victory selected before level clear.");
+                    return;
+                }
+
+                gameManager.WinGame();
+                Debug.Log("VictoryRoutePortal: Victory triggered.");
+            }
+            else if (hudController != null)
             {
                 hudController.ShowVictoryUI();
                 Debug.Log("VictoryRoutePortal: Victory UI triggered.");
